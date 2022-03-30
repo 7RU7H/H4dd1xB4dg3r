@@ -18,6 +18,7 @@ scope checker
 subdomain scraping Cloud ranges bash script  
 https://github.com/projectdiscovery/wappalyzergo  
 https://labs.detectify.com/2021/11/30/hakluke-creating-the-perfect-bug-bounty-automation/  
+consider https://github.com/cure53/Flashbang.git
 
 # Todo
 tomnomnom wordlist building   
@@ -132,6 +133,8 @@ altdns -i subdomains.txt -o data_output -w words.txt -r -s results_output.txt
 ```
 # Web scanning 
 Nikto
+
+
 
 # TechStack Analysis
 [TechStack](https://github.com/danielmiessler/TechStack)
