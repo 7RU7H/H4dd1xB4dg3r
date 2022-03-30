@@ -29,14 +29,23 @@ https://hakluke.com/blog/
 https://github.com/projectdiscovery/httpx  
 https://github.com/tomnomnom/hacks  
 https://github.com/tomnomnom?tab=repositories&q=&type=&language=&sort=stargazers
+CEwl and wordlistctl
 
-Daniel Messler Masscan guide
+Daniel Messler Masscan guide -DONE
 consider:   
 https://github.com/jhaddix/domain  
 https://github.com/jhaddix/megplus  
 
 
 # THE PLAN:
+
+# Controlflow and Paralellism
+                                                                        -> scrapping -> usability -> curation -> 
+                                                   -> main branch(recon -> (wordlist io) && vulnscanning && fuzz/bruteforcing)
+setup/checking -> initialise_workspace -> mainflow -> all_reconftw
+
+
+
 
 # Wordlists
 https://github.com/danielmiessler/SecLists  
