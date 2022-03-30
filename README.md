@@ -2,7 +2,7 @@
 Automated Bug Bounty Recon Setup
 
 # Overview
-theH4dd1xB4dg3r is recon scripting suite named after: 
+theH4dd1xB4dg3r is a automated bug bounty recon suite named after: 
 Jason Haddix []()
 Honey badgers = honey rhymes with money and honey badgers find honey
 It is starting out as my personal bug huntering scripting repository that will be inspired
