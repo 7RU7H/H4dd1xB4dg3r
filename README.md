@@ -194,4 +194,5 @@ GithubLeaks
 
 # Installation
 ```
-instal
+install.sh
+```
