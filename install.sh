@@ -25,12 +25,19 @@ git clone --depth=1 https://github.com/j3ssie/osmedeus $GOPATH/src/github.com/j3
 cd $GOPATH/src/github.com/j3ssie/osmedeus
 make build
 wait; cd /opt;
+git https://github.com/tomnomnom/gf.git
+
 
 go install -v github.com/OWASP/Amass/v3/...@master
 GO111MODULE=on go get -u github.com/jaeles-project/gospider
 go get -u github.com/gwen001/github-subdomains
 go install github.com/hakluke/hakrawler@latest
 go install -v github.com/projectdiscovery/shuffledns/cmd/shuffledns@latest
+go get -u github.com/tomnomnom/meg
+go get -u github.com/tomnomnom/unfurl
+go get -u github.com/tomnomnom/concurl
+go get -u github.com/tomnomnom/gf
+
 
 pip3 install py-altdns==1.0.2
 
