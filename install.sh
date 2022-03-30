@@ -26,6 +26,9 @@ cd $GOPATH/src/github.com/j3ssie/osmedeus
 make build
 wait; cd /opt;
 git https://github.com/tomnomnom/gf.git
+git clone https://github.com/six2dez/reconftw
+/reconftw/install.sh
+wait;
 
 
 go install -v github.com/OWASP/Amass/v3/...@master
@@ -37,6 +40,7 @@ go get -u github.com/tomnomnom/meg
 go get -u github.com/tomnomnom/unfurl
 go get -u github.com/tomnomnom/concurl
 go get -u github.com/tomnomnom/gf
+go install -v github.com/Hackmanit/Web-Cache-Vulnerability-Scanner@latest
 
 
 pip3 install py-altdns==1.0.2
@@ -46,6 +50,8 @@ cd FavFreak; virtualenv -p python3 env
 source env/bin/activate
 python3 -m pip install mmh3
 wait; cd /opt
+
+npm install -g is-website-vulnerable
 
 
 
