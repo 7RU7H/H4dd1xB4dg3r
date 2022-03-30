@@ -42,17 +42,27 @@ https://github.com/jhaddix/megplus
 https://github.com/danielmiessler/SecLists  
 https://github.com/danielmiessler/RobotsDisallowed  
 
-#Scope Domains
+# Scope Domains
+
+## Url building
+ 
+## Wordlist making
+[unfurl](https://github.com/tomnomnom/unfurl)
+[gf](https://github.com/tomnomnom/gf)
+
+## Check then Fetch
+[meg](https://github.com/tomnomnom/meg)
+
 ## Acquistions Recon
     crunchbase, wiki google
 ## ASN Enumeration
-    http://bgp.he.net
-    [amass](https://github.com/OWASP/Amass)
+http://bgp.he.net
+[amass](https://github.com/OWASP/Amass)
 ## ReverseWHOIS
-    Whoxy.com 
-    register for free api key
-    beware: rever whois data as it is least high fidelity source of new root/seed domains - may include parked domains or redirect that are out of scope
-    [DOMLink](https://github.com/vysecurity/DomLink)
+Whoxy.com 
+register for free api key
+beware: rever whois data as it is least high fidelity source of new root/seed domains - may include parked domains or redirect that are out of scope
+[DOMLink](https://github.com/vysecurity/DomLink)
 ## AD/Analytic Relationship
     builtwith.com/relationships
 ## Dorking
