@@ -3,10 +3,9 @@ Automated Bug Bounty Recon Setup
 
 # Overview
 theH4dd1xB4dg3r is a automated bug bounty recon suite named after: 
-Jason Haddix []()
-Honey badgers = honey rhymes with money and honey badgers find honey
-It is starting out as my personal bug huntering scripting repository that will be inspired
-by primarily Daniel Messler and Jason Haddox talks I have watch.
+Jason Haddix []()  
+Honey badgers = honey rhymes with money and honey badgers find honey.  
+It is starting out as my personal bug huntering scripting repository that will be inspired by primarily Daniel Messler and Jason Haddox talks I have watch.  
 
 So it nix pipeline of modular scripts/bins using opensource tools only or my own custom go, python, bash scripts and tools.
 It is motivated by the hope to find some bugs for fun, accolade and profit in that order.
