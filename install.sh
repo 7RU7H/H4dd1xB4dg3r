@@ -1,5 +1,7 @@
 #!/bin/bash
 
+apt install python3
+apt install golang-go
 apt-get --assume-yes install git make gcc # for masscan
 apt-get install brutespray
 
