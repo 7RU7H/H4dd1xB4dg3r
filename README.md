@@ -7,6 +7,8 @@ Jason Haddix []()
 Honey badgers = honey rhymes with money and honey badgers find honey.  
 It is starting out as my personal bug huntering scripting repository that will be inspired by primarily Daniel Messler and Jason Haddox talks I have watch.  
 
+My rational for using python over golang is simply to migitate any garbage collector issues that could occur as this project could cynically be thought of a multiprocessing wrapper for other people's hard work. Therefore because there is alot of data moving around in and out of the Hadd1xB4gd3r during runtime and that bug bounty automation will scale in runtime time and data process - plus garbage collection equates to sad me. I love golang, but also need to up my python game for hacking, network automation generally and a future hope move toward deep-learning security tooling. And currently golang does not get official support from tensorflow or memory control and writting this in C would probably leave never starting bug hunting this anytime soon. 
+
 So it nix pipeline of modular scripts/bins using opensource tools only or my own custom go, python, bash scripts and tools.
 It is motivated by the hope to find some bugs for fun, accolade and profit in that order.
 The control flow similar to the sections of questions to ask at various stages for bug hunting.
