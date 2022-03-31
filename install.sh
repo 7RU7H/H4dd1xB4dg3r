@@ -4,6 +4,7 @@ apt install python3
 apt install golang-go
 apt-get --assume-yes install git make gcc # for masscan
 apt-get install brutespray
+apt-get install amass
 
 git clone https://github.com/nsonaniya2010/SubDomainizer.git
 cd SubDomainizer; pip3 install -r requirements.txt; wait; cd /opt
@@ -33,7 +34,6 @@ git clone https://github.com/six2dez/reconftw
 wait;
 
 
-go install -v github.com/OWASP/Amass/v3/...@master
 GO111MODULE=on go get -u github.com/jaeles-project/gospider
 go get -u github.com/gwen001/github-subdomains
 go install github.com/hakluke/hakrawler@latest
