@@ -5,14 +5,16 @@ apt install golang-go
 apt-get --assume-yes install git make gcc # for masscan
 apt-get install brutespray
 apt-get install amass
-
+cd /opt
+bash -c "$(curl -fsSL https://raw.githubusercontent.com/osmedeus/osmedeus-base/master/install.sh)"
+wait;
 git clone https://github.com/nsonaniya2010/SubDomainizer.git
 cd SubDomainizer; pip3 install -r requirements.txt; wait; cd /opt
 git clone https://github.com/m8r0wn/subscraper
 cd subscraper; python3 setup.py install 
 wait; cd /opt
-go get github.com/incogbyte/shosubgo/apishodan; cd shosubgo/; go build main.go 
-wait; cd /opt
+git clone https://github.com/vysecurity/DomLink.git
+
 git clone https://github.com/robertdavidgraham/masscan
 cd masscan; make # any other linux than ubuntu/debian add "install", Raspi requires "-j"
 wait; cd /opt
@@ -22,28 +24,23 @@ wait; cd /opt
 git clone https://github.com/swisskyrepo/SSRFmap
 cd SSRFmap/; pip3 install -r requirements.txt; 
 wait; cd /opt
-mkdir -p $GOPATH/src/github.com/j3ssie
-bash -c "$(curl -fsSL https://raw.githubusercontent.com/osmedeus/osmedeus-base/master/install.sh)"
-git clone --depth=1 https://github.com/j3ssie/osmedeus $GOPATH/src/github.com/j3ssie/osmedeus
-cd $GOPATH/src/github.com/j3ssie/osmedeus
-make build
-wait; cd /opt;
-git https://github.com/tomnomnom/gf.git
 git clone https://github.com/six2dez/reconftw
 /reconftw/install.sh
 wait;
 
 
-GO111MODULE=on go get -u github.com/jaeles-project/gospider
-go get -u github.com/gwen001/github-subdomains
+GO111MODULE=on go install github.com/jaeles-project/gospider
+go install github.com/gwen001/github-subdomains 
 go install github.com/hakluke/hakrawler@latest
 go install -v github.com/projectdiscovery/shuffledns/cmd/shuffledns@latest
-go get -u github.com/tomnomnom/meg
-go get -u github.com/tomnomnom/unfurl
-go get -u github.com/tomnomnom/concurl
-go get -u github.com/tomnomnom/gf
+go install github.com/tomnomnom/unfurl@latest
+go install github.com/tomnomnom/concurl@latest
+go install github.com/tomnomnom/waybackurls@latest
+
 go install -v github.com/Hackmanit/Web-Cache-Vulnerability-Scanner@latest
 
+#go get github.com/incogbyte/shosubgo/apishodan; cd shosubgo/; go build main.go 
+#wait; cd /opt
 
 pip3 install py-altdns==1.0.2
 
@@ -57,6 +54,7 @@ npm install -g is-website-vulnerable
 
 
 
-
-
+# Old but not forgetten
+# go install github.com/tomnomnom/meg@latest
+# git clone https://github.com/tomnomnom/gf.git
 

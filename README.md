@@ -41,15 +41,16 @@ https://github.com/jhaddix/megplus
 
 # Controlflow and Paralellism
                                                                         -> scrapping -> usability -> curation -> 
-                                                   -> main branch(recon -> (wordlist io) && vulnscanning && fuzz/bruteforcing)
-setup/checking -> initialise_workspace -> mainflow -> all_reconftw
-
-
-
+                                                    -> main branch(recon -> (wordlist io) && vulnscanning && fuzz/bruteforcing)
+setup/checking -> initialise\_workspace -> mainflow -> all\_reconftw
+						    -> all_osmedeus
 
 # Wordlists
 https://github.com/danielmiessler/SecLists  
-https://github.com/danielmiessler/RobotsDisallowed  
+https://github.com/danielmiessler/RobotsDisallowed 
+
+
+
 
 # Scope Domains
 
@@ -57,8 +58,6 @@ https://github.com/danielmiessler/RobotsDisallowed
  
 ## Wordlist making
 [unfurl](https://github.com/tomnomnom/unfurl)
-[gf](https://github.com/tomnomnom/gf)
-
 ## Check then Fetch
 [meg](https://github.com/tomnomnom/meg)
 
@@ -85,8 +84,10 @@ beware: rever whois data as it is least high fidelity source of new root/seed do
 Assetfinder: Find domains and subdomains related to a given domain 
 [assetfinder](https://github.com/tomnomnom/assetfinder)
 
-waybackurls fetches all the URLs that the Wayback Machine knows about for a domain
+waybackurls fetches all the URLs that the Wayback Machine knows about for a domain *BUT other repo do this better and with other stuff*
+this is jsut to separate output for wordlists as well as timings 
 [waybackurl](https://github.com/tomnomnom/waybackurls)
+
 
 # SubDomain Enumeration
 1.Linked and JS discovery
@@ -123,6 +124,7 @@ https://developer.shodan.io/api/requirements
 ```
 go run /shosubgo/main.go -d target.com -s YourAPIKEY
 ```
+
 
 # Server Enumeration
 httprobe takes a list of domains and probe for working HTTP and HTTPS servers 
@@ -215,3 +217,15 @@ GithubLeaks
 ```
 install.sh
 ```
+
+# Old but not forgotten
+This section is just a reminder of stuff I tried or found better but may return to
+
+
+
+#### Gone but there anyway
+
+I like grep
+[gf](https://github.com/tomnomnom/gf)
+
+
