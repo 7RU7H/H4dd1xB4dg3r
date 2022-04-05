@@ -2,12 +2,11 @@
 Automated Bug Bounty Recon Setup
 
 # Overview
-theH4dd1xB4dg3r is a automated bug bounty recon suite named after: 
+The H4dd1xB4dg3r is an automated bug bounty recon suite named after: 
 Jason Haddix []()  
-Honey badgers = honey rhymes with money and honey badgers find honey.  
-It is starting out as my personal bug huntering scripting repository that will be inspired by primarily Daniel Messler and Jason Haddox talks I have watch.  
+It a project started to improve my golang, python and ehtical hacking toolset. The reasoning for the naming being that leetication and mashing of the primary influence's name and honey badgers. Honey rhymes with money and honey badgers find honey. It is my starting out personal bug hunting repository that will be inspired by Daniel Messler, InsiderPHD, HakLuke, NahamSEc and Jason Haddox talks I have watched. If had handfist any naming of tools related to them with other bug hunting animals and cyber security concept, atleast the goal of having fun designing and testing this modularly is accomplished.
 
-My rational for using python over golang is simply to migitate any garbage collector issues that could occur as this project could cynically be thought of a multiprocessing wrapper for other people's hard work. Therefore because there is alot of data moving around in and out of the Hadd1xB4gd3r during runtime and that bug bounty automation will scale in runtime time and data process - plus garbage collection equates to sad me. I love golang, but also need to up my python game for hacking, network automation generally and a future hope move toward deep-learning security tooling. And currently golang does not get official support from tensorflow or memory control and writting this in C would probably leave never starting bug hunting this anytime soon. 
+My rational for using python over golang is simply to migitate any garbage collector issues that could occur as this project could cynically be thought of a multiprocessing wrapper for other people's hard work. Therefore because there is alot of data moving around in and out of the Hadd1xB4gd3r during runtime and that bug bounty automation will scale in runtime time and data process - plus garbage collection equates to sad me. I love golang, but also need to up my python game for hacking, network automation generally and a future hope move toward deep-learning security tooling. And currently golang does not get official support from tensorflow or memory control and writing this in C would probably leave never starting bug hunting this anytime soon. Golang will be used for wordlist building related tasks as string package, parsing buffers, etc is faster in golang apperently, also those taskes have defined conclusion to their runtime meeting my generally stingy memory usage criteria.
 
 So it nix pipeline of modular scripts/bins using opensource tools only or my own custom go, python, bash scripts and tools.
 It is motivated by the hope to find some bugs for fun, accolade and profit in that order.
