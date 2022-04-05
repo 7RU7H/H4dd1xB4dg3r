@@ -40,8 +40,9 @@ class Target:
         #                           [nuclei]    [nuclei] 
         # [mainchain]->[OSINT][DOMAIN] [SUBDOMAIN] [SERVER]/[EXPLOITATION]
         #       [reconftw]       [datahandle]   [datahandle]
+        #                             |                 |
+        #                           [re:Enumeration-Cycle]                   
         
-
 @dataclass(slots=True)
 class Project:
     project_name_path: str
@@ -54,8 +55,11 @@ class Project:
 
     async def workspace_setup(project_name):
         os.mkdir(project_name)
-
-
+    
+    async def new_directory_tree(tree_names):
+    
+    async def update_directory(update_name):
+        
 
 # Protocols!!! management
 
@@ -200,7 +204,28 @@ async def subdomain_bruteforcing_Amass():
 ###########################################
 
 # For quick site mapping
-async def subdomain_enumeration_Gospider():
+# Web crawler needed to brute force and parse sitemap.xml, parse robots.txt, Link Finder
+# Gets URLs from Wayback Machine, Common Crawl, Virus Total, Alien Vault
+# Finds AWS-S3 from response source
+# Finds subdomains from response source
+# Generates and verifies links from JavaScript files         
+async def subdomain_enumeration_Gospider(target, blacklist, output_path):
+        siteSingleFlag = "-s " # site    
+        siteListFlag = "-S " # sites
+        blacklistFlag = "--blacklist " # blacklist
+        blacklistStr = ""
+        siteStr = ""
+        if blacklist != "":
+            blacklistStr += blacklistFlag + blacklist
+        if url.contains(".txt"):
+            siteStr += siteListFlag + target
+        else:
+            siteStr += siteSingleFlag + target
+       
+        process = subprocess.Popen([gospider {siteStr} -a --subs --sitemap --robots --js {blacklistStr} -o {output_path}], stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+        process.wait()
+        # TODO
+        # Must Reappraise wordlists and artifacts
 
 # Hakrawler for JS endpoints
 async def subdomain_enumeration_Hakrawler():
