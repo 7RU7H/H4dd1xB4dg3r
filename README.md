@@ -30,7 +30,7 @@ https://github.com/projectdiscovery/httpx
 https://github.com/tomnomnom/hacks  
 https://github.com/tomnomnom?tab=repositories&q=&type=&language=&sort=stargazers
 recon-ng
-
+https://github.com/hakluke/haktrails - "echo google.com | haktrails subdomains | httpx | hakrawler"
 
 CEwl and wordlistctl
 
@@ -62,7 +62,7 @@ https://github.com/danielmiessler/RobotsDisallowed
 ## Wordlist making
 [unfurl](https://github.com/tomnomnom/unfurl)
 ## Check then Fetch
-[meg](https://github.com/tomnomnom/meg)
+
 
 ## Acquistions Recon
     crunchbase, wiki google
@@ -130,8 +130,7 @@ go run /shosubgo/main.go -d target.com -s YourAPIKEY
 
 
 # Server Enumeration
-httprobe takes a list of domains and probe for working HTTP and HTTPS servers 
-[httprobe](https://github.com/tomnomnom/httprobe)
+https://github.com/projectdiscovery/httpx
 
 # Cloud
 [cloudbrute](https://github.com/jhaddix/CloudBrute)
@@ -229,6 +228,8 @@ This section is just a reminder of stuff I tried or found better but may return 
 #### Gone but there anyway
 
 I like grep
-[gf](https://github.com/tomnomnom/gf)
+# https://github.com/tomnomnom/gf)
+#go install -v github.com/projectdiscovery/httpx/cmd/httpx@latest
 
-
+#httprobe takes a list of domains and probe for working HTTP and HTTPS servers - REPLACED WITH httpx
+# [httprobe](https://github.com/tomnomnom/httprobe)
