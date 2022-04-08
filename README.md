@@ -29,6 +29,9 @@ https://hakluke.com/blog/
 https://github.com/projectdiscovery/httpx  
 https://github.com/tomnomnom/hacks  
 https://github.com/tomnomnom?tab=repositories&q=&type=&language=&sort=stargazers
+recon-ng
+
+
 CEwl and wordlistctl
 
 Daniel Messler Masscan guide -DONE

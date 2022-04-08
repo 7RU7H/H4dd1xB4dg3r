@@ -377,7 +377,15 @@ async def subdomain_enumeration_Gospider(target, blacklist, output_path):
         # Must Reappraise wordlists and artifacts
 
 # Hakrawler for JS endpoints
-async def subdomain_enumeration_Hakrawler():
+async def subdomain_enumeration_Hakrawler(url_list, output_path):
+    print("Beginning Hakrawler script")
+    process = subprocess.Popen(["script_hakrawler.sh", "{url_list} {output_path}"], stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+    process.wait()    
+    print(f"Complete Hakrawler on {url_list} check {output_path}")
+#
+
+# #!/bin/bash 
+# cat $1 | hakrawler 0> $2 
 
 #Subdomainizer to analyse JS
 async def subdomain_enumeration_Subdomanizer():
@@ -478,34 +486,79 @@ await run_sequence(
 ############################################
 #TODO -port flag
 #
-async def web_scanning_Nikto(protocol, target, project_name):
-    process = subprocess.Popen(["nikto", "-h {protocol}://{target} -c -o {project_name}/nikto/"], stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
-    process.wait()
+async def web_scanning_Nikto(target_list, output_path):
+    f = open(target_list , "r")
+    urls = f.read()
+    for target in urls:
+        print(f"Starting Nikto scanning on {target}")
+        process = subprocess.Popen(["nikto", "-h {target} -c -o {output_path}"], stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+        process.wait()
+        print(f"Finished Nikto scanning on {target}")
+    print(f"Finished all Nikto scanning within {target_list}")
+    f.close()
 
-# flags https://github.com/Hackmanit/Web-Cache-Vulnerability-Scanner/tree/master
-async def web_scanning_Web_Cache_Vulnerability_Scanner(domain_name, protocol):
-    print(f"Testing potential webcache poisioning with Web-Cache-Vulnerability-Scanner: {protocol}://{domain_name}")
-    process = subprocess.Popen(["wcvs", ""]stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
-    process.wait()
-    print(f"Completed testting of potential webcache poisioning with Web-Cache-Vulnerability-Scanner: {protocol}://{domain_name}")
+
+# TODO MORE flags https://github.com/Hackmanit/Web-Cache-Vulnerability-Scanner/tree/master
+async def web_scanning_Web_Cache_Vulnerability_Scanner(json_report):
+    f = open(target_list , "r")
+    urls = f.read()
+    for target in urls:
+        print(f"Testing potential webcache poisioning with Web-Cache-Vulnerability-Scanner: {target}")
+        process = subprocess.Popen(["wcvs", " --reclimit 1 -gr -gp {json_report} -ej" ]stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+        process.wait()
+        print(f"Completed testing of potential webcache poisioning with Web-Cache-Vulnerability-Scanner: {target}")
+    print(f"Finished all Web-Cache-Vulnerability-Scanner scanning within {target_list}")
+    f.close()
 
 
+# NOT SURE ON quality of this 
+# TODO Review source code, need stdout, would need multiple runs -is it even worth it? 
 async def web_scanning_analyze_FEJS_libraries_Is_website_vulnerable(domain_name, protocol):
-    process = subprocess.Popen(["npx is-website-vulnerable" "{protocol}://{domain_name} [--json] [--js-lib] [--mobile|--desktop] [--chromePath] [--cookie] [--token]]", stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+    process = subprocess.Popen(["is-website-vulnerable", "{target} --json --js-lib --desktop"], stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+    process.wait()
+    process = subprocess.Popen(["is-website-vulnerable", "{target} --json --js-lib --mobile"], stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
     process.wait()
 
-async def vuln_osmedeus(target):
-    print(f"osmedeus Vulnerablity scan starting against {target}")
-    process = subprocess.Popen(["osmedeus", "-f extensive-vuln -t {target} "], stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
-    process.wait()
-    print(f"osmedeus Vulnerablity scan completed")
+async def vuln_osmedeus(target_list):
+    f = open(target_list , "r")
+    urls = f.read()
+    for target in urls:
+        print(f"osmedeus Vulnerablity scan starting against {target}")
+        process = subprocess.Popen(["osmedeus", "-f extensive-vuln -t {target} "], stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+        process.wait()
+        print(f"osmedeus Vulnerablity scan completed for {target}")
+    print(f"Finished all Osmedeus Vuln scanning within {target_list}")
+    f.close()
 
-await run_parallelism(
-    web_scanning_Nikto()
-    web_scanning_Web_Cache_Vulnerability_Scanner()
-    web_scanning_analyze_FEJS_libraries_Is_website_vulnerable()
-    vuln_osmedeus()
-    )
+#
+# Web scanning Utility
+#
+# GENERAL NOTE TODO THESE WILL ALMOST CERTAINLY END UP AS WRAPPERS OR APP IN GO
+# FOR The superior parsing
+#
+
+async def webscan_Util_Nikto_report(nikto_output):
+        print(f"Compiling Nikto report for Nikto scans {nikto_output}")
+        process = subprocess.Popen(["reportNikto.go", "{nikto_output}"], stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+        process.wait()
+        print(f"Completed Nikto Report! Please MANAULLY review at {process}")
+
+async def webscan_Util_gron_wcvs():
+    # recursively gron the wcvs output 
+
+
+await run_sequence(
+    await run_parallelism(
+        web_scanning_Nikto()
+        web_scanning_Web_Cache_Vulnerability_Scanner()
+        web_scanning_analyze_FEJS_libraries_Is_website_vulnerable()
+        vuln_osmedeus()
+        )
+    webscan_Util_gron_wcvs()
+    webscan_Util_Nikto_report()
+    
+    
+)
 
 
 ###########################################

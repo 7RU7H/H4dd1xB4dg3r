@@ -36,7 +36,6 @@ go install -v github.com/projectdiscovery/shuffledns/cmd/shuffledns@latest
 go install github.com/tomnomnom/unfurl@latest
 go install github.com/tomnomnom/concurl@latest
 go install github.com/tomnomnom/waybackurls@latest
-
 go install -v github.com/Hackmanit/Web-Cache-Vulnerability-Scanner@latest
 
 #go get github.com/incogbyte/shosubgo/apishodan; cd shosubgo/; go build main.go 
