@@ -31,6 +31,7 @@ https://github.com/tomnomnom/hacks
 https://github.com/tomnomnom?tab=repositories&q=&type=&language=&sort=stargazers
 recon-ng
 https://github.com/hakluke/haktrails - "echo google.com | haktrails subdomains | httpx | hakrawler"
+https://github.com/s0md3v/Arjun
 
 CEwl and wordlistctl
 
