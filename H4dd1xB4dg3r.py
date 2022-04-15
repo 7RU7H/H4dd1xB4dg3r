@@ -137,9 +137,9 @@ async def acquisition_recon_Amass_CIDR(Target.cidr_range, output_path, log_path)
 #
 # Acquistion Recon Utility
 #
-async def acqRec_util_amass_ans_out(amass_output_path):
+async def acqRec_Util_amass_ans_out(amass_output_path):
 
-async def acqRec_util_concatenate_domain_names():
+async def acqRec_Util_concatenate_domain_names():
     # scrap new domains
     # newdomains -> secondary_list
     # newdomains -> big_list
@@ -152,8 +152,8 @@ await run_sequence(
     acquisition_recon_Amass_CIDR()
         )
      await run_parallelism(
-         acqRec_util_amass_ans_out()
-         acqRec_util_concatenate_domain_names()
+         acqRec_Util_amass_ans_out()
+         acqRec_Util_concatenate_domain_names()
          )
      )
 
@@ -173,7 +173,7 @@ async def ans_enumeration_Amass(Target.asnum, output_path, log_path):
 #
 # ANS enumeration Utility
 #
-async def ansEnum_util_concatenate_domain_names():
+async def ansEnum_Util_concatenate_domain_names():
     # scrap new domains
     # newdomains -> secondary_list
     # newdomains -> big_list
@@ -181,7 +181,7 @@ async def ansEnum_util_concatenate_domain_names():
 
 await run_sequence(
         ans_enumeration_Amass()
-        ansEnum_util_concatenate_domain_names()
+        ansEnum_Util_concatenate_domain_names()
         )
 
 #
@@ -203,7 +203,7 @@ async def reverse_whois_DOMLink(output_path):
 #
 #   Rever whois Utility
 # 
-async def revWhois_util_concatenate_domain_names():
+async def revWhois_Util_concatenate_domain_names():
         # scrap new domains
         # newdomains -> secondary_list
         # newdomains -> big_list
@@ -211,7 +211,7 @@ async def revWhois_util_concatenate_domain_names():
 
 await run_sequence(
         reverse_whois_DOMLink()
-        revWhois_util_concatenate_domain_names()
+        revWhois_Util_concatenate_domain_names()
         )
 
 
@@ -261,7 +261,7 @@ async def domain_enumeration_Waybackurls():
 #
 # Domain Enuemration Utility
 #
-async def domEnum_concatenate_urls():   
+async def domEnum_Util_concatenate_urls():   
         # scrap new domains
         # newdomains -> secondary_list
         # newdomains -> big_list
@@ -274,7 +274,7 @@ await run_sequence(
         domain_enumeration_Waybackurls()
         domain_enumeration_Assetfinder()
     )
-    domEnum_concatenate_urls()
+    domEnum_Util_concatenate_urls()
 )
 
 
