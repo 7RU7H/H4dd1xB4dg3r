@@ -1,0 +1,2 @@
+This is where all non directly: subprocess(["{tool_name}", "{flags}"]... !! Are run from this directory, currently for monorepo brain management the are commented below just for readability
+They will end up here 

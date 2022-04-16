@@ -1,15 +1,19 @@
 #!/bin/bash
 
+apt-get update
+apt-get upgrade
+apt-get dist-upgrade
 apt install python3
 apt install golang-go
 apt-get --assume-yes install git make gcc # for masscan
-apt-get install brutespray
-apt-get install amass
+apt-get install amass brutespray
+apt install theharvester recon-ng wpscan
 cd /opt
 bash -c "$(curl -fsSL https://raw.githubusercontent.com/osmedeus/osmedeus-base/master/install.sh)"
 wait;
 git clone https://github.com/nsonaniya2010/SubDomainizer.git
-cd SubDomainizer; pip3 install -r requirements.txt; wait; cd /opt
+cd SubDomainizer; pip3 install -r requirements.txt; 
+wait; cd /opt
 git clone https://github.com/m8r0wn/subscraper
 cd subscraper; python3 setup.py install 
 wait; cd /opt
@@ -52,6 +56,11 @@ python3 -m pip install mmh3
 wait; cd /opt
 
 npm install -g is-website-vulnerable
+
+#TODO 
+#recon-ng setup
+#recon-cli -C 
+# https://tryhackme.com/room/redteamrecon
 
 
 

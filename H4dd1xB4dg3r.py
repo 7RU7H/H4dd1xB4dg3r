@@ -15,10 +15,14 @@ class Target:
     #out-of-scope-related
     #blacklisted_domains: #TODO figure it out!!
     #blacklisted_subdomains #TODO figure it out!!!
+    blacklist_gospider: str
     project_name_path: str
     project_name: str
+    badger_location: str
 
     def __init__(self):    
+        badger_location = os.pwd
+        blacklist_gospider = jpg,jpeg,gif,css,tif,tiff,png,ttf,woff,woff2,ico,pdf,svg,txt
 
     async def run_sequence(*functions: Awaitable[Any]) -> None:
         for function in functions:
@@ -118,9 +122,34 @@ async def all_osmedeus():
     print(f"reconftw -all scan completed on {domain_name}, check {output_path}")
 
 
+#
+# OSINT
+#
+
+
+# theHarvester
+# -s for shodan
+async def osint_theHarvester(target,output_path):
+    print(f"Beginning theHarvester {target}")
+    process = subprocess.Popen(["theHarvester", "-d {target} -g -r -f {output_path} --screenshot {output_path}" ], stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+    process.wait()
+    print(f"theHarvester OSINT against {target} complete, check {output_path}")
+
+# recon-ng
+async def osint_reconNG(target,output_path):
+    print(f"Beginning recon-ng {target}")
+    process = subprocess.Popen(["recon-cli", "-d {target} -g -r -f {output_path}"], stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+    process.wait()
+    print(f"recon-ng cli OSINT against {target} complete, check {output_path}")
+
+
+#
 # Aquistion Recon 
-async def acquistion_recon():
+#
+async def acquistion_recon_wordlist_generation():
     #scrap crunchbase, wiki, google
+    # GO GO GO
+
 
 async def acquisition_recon_Amass_ORG(Target.organisation_root, output_path, log_path):
     print("Beginning Amass intel -org")
@@ -225,6 +254,20 @@ await run_sequence(
 async def analyse_relationships():
     #scrap builtwith.com/relationship
 
+async def analyse_relationships_findrelationships(project_name, badger_location, target):
+    print("findrealtionships.py Started")
+    targetstr = ""
+    if target.contains(".txt"):
+        process = subprocess.Popen(["scripts/script_findrelationships_multi.sh", "{project_name} {badger_location} {target}", stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+        process.wait()
+    else:
+        process = subprocess.Popen(["python3", "{badger_location}/scripts/findrelationships.py {target 0> {project_name}/findrelationships/findrelationships_output.txt", stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+        process.wait()
+    print("findrelationships.py completed")
+
+# #!/bin/bash
+# cat $3 | python3 $2/scripts/findrelationships.py 0> $1/findrelationships/findrelationships_output.txt"
+
 ###########################################
 #
 #  Dorking - SCRAPPAGE! 
@@ -245,10 +288,10 @@ async def domain_enumeration_Assetfinder():
     process.wait()
     print("Assetfinder completed")
 
-# Historic domina/subdomain list building
+# Historic domain/subdomain list building
 async def domain_enumeration_Waybackurls():
     print(f"Running indenpendent waybackurls")      
-    process = subprocess.Popen(["script_waybackurl.sh", "{target_list}"], stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+    process = subprocess.Popen(["scripts/script_waybackurl.sh", "{target_list}"], stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
     process.wait()
     print(f"Completed independent waybackurls")   
 
@@ -285,11 +328,11 @@ await run_sequence(
 
 # Nuclei
 async def subdomain_takeover_Nuclei(target):
-    targetStr = ""
+    targetstr = ""
     if target.contains(".txt"):
-        targetStr = f"-list {target}"
+        targetstr = f"-list {target}"
     else:
-        targetStr = f"-u {target}"        
+        targetstr = f"-u {target}"        
     print(f"Running Nuclei with the target flag and arguments set to: {targetStr}")   
     process = subprocess.Popen(["nuclei", "{targetStr} -me nuclei/"], stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
     process.wait()
@@ -368,7 +411,6 @@ async def subdomain_enumeration_Gospider(target, blacklist, output_path):
             siteStr += siteListFlag + target
         else:
             siteStr += siteSingleFlag + target
-
         print(f"Running Gospider against {siteStr} with {blacklistStr}")      
         process = subprocess.Popen(["gospider", "{siteStr} -a --subs --sitemap --robots --js {blacklistStr} -o {output_path}"], stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
         process.wait()
@@ -379,7 +421,7 @@ async def subdomain_enumeration_Gospider(target, blacklist, output_path):
 # Hakrawler for JS endpoints
 async def subdomain_enumeration_Hakrawler(url_list, output_path):
     print("Beginning Hakrawler script")
-    process = subprocess.Popen(["script_hakrawler.sh", "{url_list} {output_path}"], stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+    process = subprocess.Popen(["scripts/script_hakrawler.sh", "{url_list} {output_path}"], stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
     process.wait()    
     print(f"Complete Hakrawler on {url_list} check {output_path}")
 #
@@ -394,7 +436,7 @@ async def subdomain_enumeration_Subdomanizer():
 # Take a list of domains and probe for working HTTP and HTTPS servers 
 async def subdomain_enumeration_Httprobe(target_list):
     print(f"Running httProbe")      
-    process = subprocess.Popen(["script_httprob.sh", "{target_list}"], stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+    process = subprocess.Popen(["scripts/script_httprob.sh", "{target_list}"], stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
     process.wait()
     print(f"Completed httProbe")   
 
@@ -403,6 +445,15 @@ async def subdomain_enumeration_Httprobe(target_list):
 
 
 
+async def subdom_Util_gospider(input_path):
+    print(f"")      
+    process = subprocess.Popen(["scripts/script_gospiderSD.sh", "{input_path}"], stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+    process.wait()
+    print(f"")    
+
+# Bash script to run this, due to subprocess.open([ARG,ARG]):
+#grep $@ -Eo '(http|https)://[^/"]+' | anew
+# add to subdomain lists
 
 await run_parallelism(
     subdomain_enumeration_Gospider()
@@ -429,8 +480,15 @@ async def subdomain_scrapping_Amass():
 
 async def subdomain_scrapping_Subfinder():
 
-#github-subdomain scraps github
+# github-subdomain scraps github
+# kingofbugbounty tips
+# Search subdomains using github and httpx
+# Github-search - Using python3 to search subdomains, httpx filter hosts by up status-code response (200)
 async def subdomain_scrapping_GithubSubdomain():
+    print(f"Beginning github-subdomain targeting {domain}")
+    process = subprocess.Popen(["github-subdomain.py", "-t {apigithub} -d {domain} | httpx --title"], stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+    process.wait()
+    print(f"Completed github-subdomain")    
    
 await run_parallelism(
         subdomain_scrapping_GithubSubdomain()
@@ -454,7 +512,7 @@ async def cloud_enumeration_Cloudbrute():
 ###########################################
 
 async def port_analysis_Dnmasscan():
-    exit_code = subprocess.call(./dnmasscan.sh) # FLAGS
+    exit_code = subprocess.call(.scripts/dnmasscan.sh) # FLAGS
 
 async def port_analysis_PASS_dnmascan_out():
 
@@ -559,6 +617,8 @@ await run_sequence(
     
     
 )
+
+# def webscan_optional_wpscan():
 
 
 ###########################################

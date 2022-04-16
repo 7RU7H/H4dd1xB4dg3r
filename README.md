@@ -29,9 +29,12 @@ https://hakluke.com/blog/
 https://github.com/projectdiscovery/httpx  
 https://github.com/tomnomnom/hacks  
 https://github.com/tomnomnom?tab=repositories&q=&type=&language=&sort=stargazers
-recon-ng
 https://github.com/hakluke/haktrails - "echo google.com | haktrails subdomains | httpx | hakrawler"
+
 https://github.com/s0md3v/Arjun
+https://github.com/m4ll0k/SecretFinder
+https://github.com/m4ll0k/BBTz
+
 
 CEwl and wordlistctl
 
@@ -51,10 +54,13 @@ setup/checking -> initialise\_workspace -> mainflow -> all\_reconftw
 
 # Wordlists
 https://github.com/danielmiessler/SecLists  
-https://github.com/danielmiessler/RobotsDisallowed 
+https://github.com/danielmiessler/RobotsDisallowed
 
 
+# OSINT
 
+[theHarvester](https://www.kali.org/tools/theharvester/)
+[recon-ng](https://www.kali.org/tools/recon-ng/)
 
 # Scope Domains
 
@@ -66,6 +72,7 @@ https://github.com/danielmiessler/RobotsDisallowed
 
 
 ## Acquistions Recon
+[theHarvester](https://github.com/laramies/theHarvester)
     crunchbase, wiki google
 ## ASN Enumeration
 http://bgp.he.net
