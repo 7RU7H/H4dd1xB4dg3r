@@ -1,5 +1,6 @@
 import multiprocessing as mp
 import threading, os, sys, time, dataclasses, subproccess
+# import workspace_management internalise it in the class
 
 # slots break in multiple inheritance AVOID, 20% efficiency over no slot dict
 @dataclass(slots=True)
@@ -22,7 +23,7 @@ class Target:
 
     def __init__(self):    
         badger_location = os.pwd
-        blacklist_gospider = jpg,jpeg,gif,css,tif,tiff,png,ttf,woff,woff2,ico,pdf,svg,txt
+        blacklist_gospider = "jpg,jpeg,gif,css,tif,tiff,png,ttf,woff,woff2,ico,pdf,svg,txt"
 
     async def run_sequence(*functions: Awaitable[Any]) -> None:
         for function in functions:
@@ -236,7 +237,7 @@ async def revWhois_Util_concatenate_domain_names():
         # scrap new domains
         # newdomains -> secondary_list
         # newdomains -> big_list
-         # TODO refactor to one function!
+        # TODO refactor to one function!
 
 await run_sequence(
         reverse_whois_DOMLink()
@@ -256,7 +257,6 @@ async def analyse_relationships():
 
 async def analyse_relationships_findrelationships(project_name, badger_location, target):
     print("findrealtionships.py Started")
-    targetstr = ""
     if target.contains(".txt"):
         process = subprocess.Popen(["scripts/script_findrelationships_multi.sh", "{project_name} {badger_location} {target}", stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
         process.wait()
@@ -282,7 +282,7 @@ async def dork_target_xtext():
 # Domain Enuemration
 #
 # Prelimiary domain/subdomain list building
-async def domain_enumeration_Assetfinder():
+async def domain_enumeration_Assetfinder(domain):
     print("Assetfinder Started")
     process = subprocess.Popen(["assetfinder", "{domain} 0> assetfinder_output.txt", stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
     process.wait()
@@ -328,7 +328,6 @@ await run_sequence(
 
 # Nuclei
 async def subdomain_takeover_Nuclei(target):
-    targetstr = ""
     if target.contains(".txt"):
         targetstr = f"-list {target}"
     else:
@@ -349,11 +348,10 @@ async def subdomain_bruteforcing_ShuffleDNS():
 
 #domain_name must be a .txt file
 async def subdomain_Amass_Non_Brute(domain_name, output_path, log_path, blacklist):
-    blacklistStr = ""
     if blacklist_domains != "":
-        blacklistStr += "-bl " + blacklist_domains
+        blacklistStr = f"-bl {blacklist_domains}"
     if blacklist_subdomains != "":
-         blacklistStr += "-blf " + blacklist_subdomains
+         blacklistStr = f"-blf {blacklist_subdomains}"
     print("Beginning Amass enum -active -ip -src -df {domain_name} {blacklistStr} -oA {output_path} -l {log_path}")
     process = subprocess.Popen(["amass",  "enum -active -ip -src -df {domain_name} {blacklistStr} -oA {output_path} -l {log_path}"], stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
     process.wait()
@@ -362,11 +360,10 @@ async def subdomain_Amass_Non_Brute(domain_name, output_path, log_path, blacklis
 
 #domain_name must be a .txt file
 async def subdomain_Amass_Brute(domain_name, output_path, log_path, blacklist_domains, blacklist_subdomains):
-    blacklistStr = ""
     if blacklist_domains != "":
-        blacklistStr += "-bl " + blacklist_domains
+        blacklistStr = f"-bl {blacklist_domains}"
     if blacklist_subdomains != "":
-         blacklistStr += "-blf " + blacklist_subdomains
+         blacklistStr = f"-blf {blacklist_subdomains}"
     print(f"Beginning Amass enum -active -ip -src -brute -df {domain_name} {blacklistStr} -oA {output_path} -l {log_path}")
     process = subprocess.Popen([" amass", "enum -active -ip -src -brute {domain_name} {blacklistStr} -oA {output_path} -l {log_path}"], stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
     process.wait()
@@ -400,17 +397,12 @@ await run_sequence(
 # Finds subdomains from response source
 # Generates and verifies links from JavaScript files         
 async def subdomain_enumeration_Gospider(target, blacklist, output_path):
-        siteSingleFlag = "-s " # site    
-        siteListFlag = "-S " # sites
-        blacklistFlag = "--blacklist " # blacklist
-        blacklistStr = ""
-        siteStr = ""
         if blacklist != "":
-            blacklistStr += blacklistFlag + blacklist
+            blacklistStr = f"--blacklist {blacklist}"
         if url.contains(".txt"):
-            siteStr += siteListFlag + target
+            siteStr = f"-S {target}" # sites file.txt
         else:
-            siteStr += siteSingleFlag + target
+            siteStr = f"-s {target}" # site domain
         print(f"Running Gospider against {siteStr} with {blacklistStr}")      
         process = subprocess.Popen(["gospider", "{siteStr} -a --subs --sitemap --robots --js {blacklistStr} -o {output_path}"], stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
         process.wait()
@@ -514,11 +506,11 @@ async def cloud_enumeration_Cloudbrute():
 async def port_analysis_Dnmasscan():
     exit_code = subprocess.call(.scripts/dnmasscan.sh) # FLAGS
 
-async def port_analysis_PASS_dnmascan_out():
+async def port_analysis_Util_Pass_dnmascan_out():
 
 async def port_analysis_Masscan():
 
-async def port_analysis_PASS_masscan_out():
+async def port_analysis_Util_Pass_masscan_out():
 
 async def service_scanning_Nmap():
     #output from masscan
@@ -529,12 +521,14 @@ async def service_scanning_Brutespray():
 
 await run_sequence(
         port_analysis_Dnmasscan()
-        port_analysis_PASS_dnmascan_out()
+        port_analysis_Util_Pass_dnmascan_out()
         port_analysis_Masscan()
-        port_analysis_PASS_masscan_out()
+        port_analysis_Util_Pass_masscan_out()
         service_scanning_Nmap()
-        service_scanning_Brutespray()
         )
+
+# service_scanning_Brutespray()
+
 
 
 ############################################
@@ -545,29 +539,27 @@ await run_sequence(
 #TODO -port flag
 #
 async def web_scanning_Nikto(target_list, output_path):
-    f = open(target_list , "r")
-    urls = f.read()
-    for target in urls:
-        print(f"Starting Nikto scanning on {target}")
-        process = subprocess.Popen(["nikto", "-h {target} -c -o {output_path}"], stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
-        process.wait()
-        print(f"Finished Nikto scanning on {target}")
-    print(f"Finished all Nikto scanning within {target_list}")
-    f.close()
+    with open(target_list , "r") as f:
+        urls = f.read()
+        for target in urls:
+            print(f"Starting Nikto scanning on {target}")
+            process = subprocess.Popen(["nikto", "-h {target} -c -o {output_path}"], stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+            process.wait()
+            print(f"Finished Nikto scanning on {target}")
+        print(f"Finished all Nikto scanning within {target_list}")
+
 
 
 # TODO MORE flags https://github.com/Hackmanit/Web-Cache-Vulnerability-Scanner/tree/master
 async def web_scanning_Web_Cache_Vulnerability_Scanner(json_report):
-    f = open(target_list , "r")
-    urls = f.read()
-    for target in urls:
-        print(f"Testing potential webcache poisioning with Web-Cache-Vulnerability-Scanner: {target}")
-        process = subprocess.Popen(["wcvs", " --reclimit 1 -gr -gp {json_report} -ej" ]stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
-        process.wait()
-        print(f"Completed testing of potential webcache poisioning with Web-Cache-Vulnerability-Scanner: {target}")
-    print(f"Finished all Web-Cache-Vulnerability-Scanner scanning within {target_list}")
-    f.close()
-
+    with open(target_list , "r") as f:
+        urls = f.read()
+        for target in urls:
+            print(f"Testing potential webcache poisioning with Web-Cache-Vulnerability-Scanner: {target}")
+            process = subprocess.Popen(["wcvs", "--reclimit 1 -gr -gp {json_report} -ej" ]stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+            process.wait()
+            print(f"Completed testing of potential webcache poisioning with Web-Cache-Vulnerability-Scanner: {target}")
+        print(f"Finished all Web-Cache-Vulnerability-Scanner scanning within {target_list}")
 
 # NOT SURE ON quality of this 
 # TODO Review source code, need stdout, would need multiple runs -is it even worth it? 
@@ -578,15 +570,14 @@ async def web_scanning_analyze_FEJS_libraries_Is_website_vulnerable(domain_name,
     process.wait()
 
 async def vuln_osmedeus(target_list):
-    f = open(target_list , "r")
-    urls = f.read()
-    for target in urls:
-        print(f"osmedeus Vulnerablity scan starting against {target}")
-        process = subprocess.Popen(["osmedeus", "-f extensive-vuln -t {target} "], stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
-        process.wait()
-        print(f"osmedeus Vulnerablity scan completed for {target}")
-    print(f"Finished all Osmedeus Vuln scanning within {target_list}")
-    f.close()
+    with open(target_list , "r") as f:
+        urls = f.read()
+        for target in urls:
+            print(f"osmedeus Vulnerablity scan starting against {target}")
+            process = subprocess.Popen(["osmedeus", "-f extensive-vuln -t {target} "], stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+            process.wait()
+            print(f"osmedeus Vulnerablity scan completed for {target}")
+        print(f"Finished all Osmedeus Vuln scanning within {target_list}")
 
 #
 # Web scanning Utility
