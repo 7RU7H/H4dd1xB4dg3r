@@ -22,12 +22,10 @@ consider https://github.com/cure53/Flashbang.git
 tomnomnom wordlist building   
 check:
 https://github.com/jhaddix/tbhm  
-nuclei templating https://github.com/projectdiscovery/nuclei  
 https://hakluke.com/blog/  
-https://github.com/projectdiscovery/httpx  
-https://github.com/tomnomnom/hacks  
-https://github.com/tomnomnom?tab=repositories&q=&type=&language=&sort=stargazers
 https://github.com/hakluke/haktrails - "echo google.com | haktrails subdomains | httpx | hakrawler"
+https://github.com/epi052/feroxbuster
+
 
 https://github.com/s0md3v/Arjun
 https://github.com/m4ll0k/SecretFinder
@@ -57,6 +55,17 @@ https://github.com/danielmiessler/RobotsDisallowed
 
 # OSINT
 
+Automated scope parametres
+`bbscope (h1|bc|it) -t <YOUR_TOKEN> <other-flags>` GET ACCOUNTS FOR EACH:
+
+    HackerOne: login, then grab your API token here
+    Bugcrowd: login, then grab the _crowdcontrol_session cookie
+    Intigriti: login, then intercept a request to api.intigriti.com and look for the Authentication: Bearer XXX header. XXX is your token
+
+-c all # url check all not individual
+`bbscope h1 -t <YOUR_TOKEN> -u <YOUR_H1_USERNAME> -b -o t` print all your rewardable programs
+
+[bbscope](https://github.com/sw33tLie/bbscope)
 [theHarvester](https://www.kali.org/tools/theharvester/)
 [recon-ng](https://www.kali.org/tools/recon-ng/)
 

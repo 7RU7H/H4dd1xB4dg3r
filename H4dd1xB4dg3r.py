@@ -91,10 +91,12 @@ class Target:
 
 
     async def run():
-        await run_parallelism(
-                all_reconftw()
-                all_osmedeus()
-                await run_sequence(
+        await run_sequence(
+                #scope_init_bbscope()
+                await run_parallelism(
+                    all_reconftw()
+                    all_osmedeus()
+                    await run_sequence(
                     # maintool chain block, all black run_(parallel/sequence) beloew each block for legiability 
 
 
@@ -104,12 +106,17 @@ class Target:
                     )
                 # Once first main is concluded as secondary scan on !!leaf-most!! collected information is started - NOT TO BE CONFUSED BY PARALLEL Secondary internal AFTER EACH [MODULE] on itself's collected data.
                 # more than that would be overkill and the secondary is more likely to be slower anyway
-                await run_sequence(
+                    await run_sequence(
 
 
-                    )
+                        )
                 # Absolute consolidation OR another scan on next newest !!leaf-most!! data
-                )
+            )
+
+
+#TODO
+#scope related functions
+#async def 
         
 # reconftw Framework
 async def all_reconftw(self.domain_name, output_path):
@@ -154,20 +161,27 @@ async def acquistion_recon_wordlist_generation():
 
 async def acquisition_recon_Amass_ORG(Target.organisation_root, output_path, log_path):
     print("Beginning Amass intel -org")
-    process = subprocess.Popen(["amass", "intel -src -org {Target.organisation_root -oA {output_path} -{logpath}"], stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+    process = subprocess.Popen(["amass", "intel -src -org {Target.organisation_root} -max-dns-queries 2500 -oA {output_path} -{logpath}"], stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
     process.wait()
     print("Amass intel -src -org complete")
 
 async def acquisition_recon_Amass_CIDR(Target.cidr_range, output_path, log_path):
     print("Beginning Amass intel -src -cidr {}")
-    process = subprocess.Popen(["amass", "intel -src -cidr {Target.cidr_range} -oA {output_path} -l {log_path}" ], stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+    process = subprocess.Popen(["amass", "intel -src -cidr {Target.cidr_range} -max-dns-queries 2500 -oA {output_path} -l {log_path}" ], stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
     process.wait()
     print("Amass intel -src -cidr complete")
 
 #
 # Acquistion Recon Utility
 #
-async def acqRec_Util_amass_ans_out(amass_output_path):
+async def acqRec_Util_amass_ans_out(intel_output_path, outpath_file):
+    print("Getting ASN number from amass intel output")
+    process = subprocess.Popen(["scripts/script_amassASN_util.sh", "{intel_output_path} {output_file}"], stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+    process.wait()
+    print("File containing ASN numbers for amass intel -asn completed")
+
+# cat $1 awk -F, '{print $1}' ORS=',' | sed 's/,$//' | xargs -P3 -I@ -d ',' > $2
+
 
 async def acqRec_Util_concatenate_domain_names():
     # scrap new domains
@@ -188,14 +202,13 @@ await run_sequence(
      )
 
 
-
 #
 # ANS enumeration
 #
 async def ans_enumeration_Amass(Target.asnum, output_path, log_path):
     for ans in Target_asnum:
         print("Beginning Amass intel -ans {ans} -oA {output_path} -l {log_path}")
-        process = subprocess.Popen(["amass", "intel -asn {asn} -oA {output_path} -l {log_path}"], stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+        process = subprocess.Popen(["amass", "intel -asn {asn} -max-dns-queries 2500 -oA {output_path} -l {log_path}"], stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
         process.wait()
         print("Amass intel -asn {asn} complete")
     print(f"Ans recon for {Target.asnum} completed")
@@ -297,7 +310,7 @@ async def domain_enumeration_Waybackurls():
 
 # Bash script to run this, due to subprocess.open([ARG,ARG]):
 # This one does go to stdout
-#    cat $FILE | waybackurls > waybackurl_out.txt
+#    cat $1 | waybackurls > waybackurl_out.txt
 
 
 
@@ -319,12 +332,6 @@ await run_sequence(
     )
     domEnum_Util_concatenate_urls()
 )
-
-
-    
-
-
-
 
 # Nuclei
 async def subdomain_takeover_Nuclei(target):
@@ -348,10 +355,10 @@ async def subdomain_bruteforcing_ShuffleDNS():
 
 #domain_name must be a .txt file
 async def subdomain_Amass_Non_Brute(domain_name, output_path, log_path, blacklist):
-    if blacklist_domains != "":
-        blacklistStr = f"-bl {blacklist_domains}"
-    if blacklist_subdomains != "":
-         blacklistStr = f"-blf {blacklist_subdomains}"
+    if blacklist.Contains(".txt"):
+        blacklistStr = f"-blf {blacklist}"
+    else:
+        blacklistStr = f"-bl {blacklist}"
     print("Beginning Amass enum -active -ip -src -df {domain_name} {blacklistStr} -oA {output_path} -l {log_path}")
     process = subprocess.Popen(["amass",  "enum -active -ip -src -df {domain_name} {blacklistStr} -oA {output_path} -l {log_path}"], stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
     process.wait()
@@ -435,8 +442,6 @@ async def subdomain_enumeration_Httprobe(target_list):
 # Bash script to run this, due to subprocess.open([ARG,ARG]):
 #    cat $FILE | httprobe -c 50 0> httprobe_out.txt
 
-
-
 async def subdom_Util_gospider(input_path):
     print(f"")      
     process = subprocess.Popen(["scripts/script_gospiderSD.sh", "{input_path}"], stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
@@ -472,21 +477,21 @@ async def subdomain_scrapping_Amass():
 
 async def subdomain_scrapping_Subfinder():
 
-# github-subdomain scraps github
+# github subdomain scraps github
 # kingofbugbounty tips
 # Search subdomains using github and httpx
 # Github-search - Using python3 to search subdomains, httpx filter hosts by up status-code response (200)
-async def subdomain_scrapping_GithubSubdomain():
+async def subdomain_scrapping_GithubSubdomain(api_key_github, domain, output_path):
     print(f"Beginning github-subdomain targeting {domain}")
-    process = subprocess.Popen(["github-subdomain.py", "-t {apigithub} -d {domain} | httpx --title"], stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+    process = subprocess.Popen(["","{api_key_github} {domain} {output_path}"], stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
     process.wait()
-    print(f"Completed github-subdomain")    
+    print(f"Completed github-subdomain")
+#!/bin/bash
+# python3 /opt/github-subdomain.py -t $1 -d $2 | httpx --title > $3
    
 await run_parallelism(
         subdomain_scrapping_GithubSubdomain()
         )
-
-#
 #
 #
 #
@@ -508,7 +513,26 @@ async def port_analysis_Dnmasscan():
 
 async def port_analysis_Util_Pass_dnmascan_out():
 
-async def port_analysis_Masscan():
+async def port_analysis_Masscan(ip_ranges, exclude, output_path)
+    if exclude.Contains(".txt"):
+        excludeStr = f"--excludefile {exclude}"
+    else:
+        excludeStr = ""
+    if ip_range.Contains(".txt"):
+        with open(ip_range, "r") as f:
+            ips = f.read()
+            for target in ips:
+                print(f"Masscan using file:{ip_ranges}, target: {target}")
+                process = subprocess.Popen(["masscan", "-p0-65535 --rate 10000000 {excludeStr} -oG {output_path}"], stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+                process.wait()
+                print(f"Masscan against {target} complete")
+    else:
+        print(f"Masscan using file:{ip_ranges}, target: {target}")
+        process = subprocess.Popen(["masscan", "-p0-65535 --rate 10000000 {excludeStr} -oG {output_path}"], stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+        process.wait()
+        print(f"Masscan against {target} complete")
+
+
 
 async def port_analysis_Util_Pass_masscan_out():
 
@@ -564,10 +588,12 @@ async def web_scanning_Web_Cache_Vulnerability_Scanner(json_report):
 # NOT SURE ON quality of this 
 # TODO Review source code, need stdout, would need multiple runs -is it even worth it? 
 async def web_scanning_analyze_FEJS_libraries_Is_website_vulnerable(domain_name, protocol):
+    print(f"")
     process = subprocess.Popen(["is-website-vulnerable", "{target} --json --js-lib --desktop"], stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
     process.wait()
     process = subprocess.Popen(["is-website-vulnerable", "{target} --json --js-lib --mobile"], stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
     process.wait()
+    print(f"")
 
 async def vuln_osmedeus(target_list):
     with open(target_list , "r") as f:
@@ -624,6 +650,9 @@ await run_sequence(
 
 async def fuzz_SSRF_SSRFmap():
 
+
+
+# jason haddix sqli statistics paper database nomanclature "id"
 async def sql_database_found_SQLMAP():
 
 
