@@ -25,7 +25,7 @@ https://github.com/jhaddix/tbhm
 https://hakluke.com/blog/  
 https://github.com/hakluke/haktrails - "echo google.com | haktrails subdomains | httpx | hakrawler"
 https://github.com/epi052/feroxbuster
-
+https://github.com/KingOfBugbounty/KingOfBugBountyTips
 
 https://github.com/s0md3v/Arjun
 https://github.com/m4ll0k/SecretFinder
