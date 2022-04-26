@@ -1,4 +1,11 @@
 #!/bin/bash
-# Checks tools are functional 
+# Automate the testing 
 
-masscan --regres 
+mympy src
+flake8 src
+pytest
+# tox will slow down testing as it tests on fresh env 
+# tox 
+
+
+# masscan --regres 

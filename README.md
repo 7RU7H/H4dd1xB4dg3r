@@ -1,7 +1,10 @@
 # H4dd1xB4dg3r
 Automated Bug Bounty Recon Setup
 
+![Tests](https://github.com/mCodingLLC/SlapThatLikeButton-TestingStarterProject/actions/workflows/tests.yml/badge.svg)
+
 # Overview
+
 The H4dd1xB4dg3r is an automated bug bounty recon suite named after [Jason Haddix](https://github.com/jhaddix).
 It a project started to improve my golang, python and ehtical hacking toolset. The reasoning for the naming being that leetication and mashing of the primary influence's name and honey badgers. Honey rhymes with money and honey badgers find honey. It is my starting out personal bug hunting repository that will be inspired by Daniel Messler, InsiderPHD, HakLuke, NahamSEc and Jason Haddox talks I have watched. If had handfist any naming of tools related to them with other bug hunting animals and cyber security concept, atleast the goal of having fun designing and testing this modularly is accomplished.
 
@@ -10,13 +13,18 @@ My rational for using python over golang is simply to migitate any garbage colle
 So it \*nix pipeline of modular scripts/bins using opensource tools only or my own custom go, python, bash scripts and tools.
 It is motivated by the hope to find some bugs for fun, accolade and profit in that order.
 The control flow similar to the sections of questions to ask at various stages for bug hunting.
-This heavily inspired from talks Bug Hunters methodologyv4, various automation, tool usage talks, articles by Daniel Messlier.
+This heavily inspired from talks Bug Hunters methodology version 4, various automation, tool usage talks, articles by Daniel Messlier.
 
-# Looking for, maybe make scope checker  
-subdomain scraping Cloud ranges bash script  
-https://github.com/projectdiscovery/wappalyzergo  
-https://labs.detectify.com/2021/11/30/hakluke-creating-the-perfect-bug-bounty-automation/  
-consider https://github.com/cure53/Flashbang.git
+Eventual all the documentation below will be archived for now it serves a nice place for me to put this stuff.
+
+# Credit!
+
+[Jason Haddix the one and only](https://github.com/jhaddix)
+[mCoding for python automated testing, metaclasses, nooby things I was doing, etc](https://github.com/mCodingLLC/)
+[Tib3rius for just best practices peaking](https://github.com/Tib3rius/)
+[Daniel Miessler being the other one and only](https://github.com/danielmiessler)
+[For advice videos and seriously cool tools - Hakluke](https://github.com/danielmiessler) 
+[Arjan for the async and dataclasses and better python](https://www.youtube.com/channel/UCVhQ2NnY5Rskt6UjCUkJ_DA)
 
 # Todo
 tomnomnom wordlist building   
@@ -26,27 +34,44 @@ https://hakluke.com/blog/
 https://github.com/hakluke/haktrails - "echo google.com | haktrails subdomains | httpx | hakrawler"
 https://github.com/epi052/feroxbuster
 https://github.com/KingOfBugbounty/KingOfBugBountyTips
-
 https://github.com/s0md3v/Arjun
 https://github.com/m4ll0k/SecretFinder
 https://github.com/m4ll0k/BBTz
 
-
-CEwl and wordlistctl
-
-Daniel Messler Masscan guide -DONE
-consider:   
-https://github.com/jhaddix/domain  
-https://github.com/jhaddix/megplus  
-
-
 # THE PLAN:
 
 # Controlflow and Paralellism
+
+```
+Original
                                                                         -> scrapping -> usability -> curation -> 
                                                     -> main branch(recon -> (wordlist io) && vulnscanning && fuzz/bruteforcing)
 setup/checking -> initialise\_workspace -> mainflow -> all\_reconftw
 						    -> all_osmedeus
+
+Improved
+
+        # reconftw, osmedeus in parallel to main
+        # Modularity to be recursively run
+        # BUT also neatly using bandwidth while dataprocessing  
+        # Strategic Nuclei, fuzzing scans   
+        # 
+        #
+        # [osmedeus]                                                                                            | C |
+        #                    [nuclei][nuclei]    [nuclei]                                                       | O |
+        #  mainchain ->[OSINT][DOMAIN] [SUBDOMAIN] [SERVER]/[EXPLOITATION]                                      | N |
+        # [reconftw]    |  [datahandle]   [datahandle]                                                          | S |
+        #               |             |                 |                                                       | O |
+        #               |           [re:Enumeration-Cycle]                                                      | L |
+        #               |       [The fuzziest branch that is queued sequence of fuzz but not the main branch]   | I |
+        #               |                                                                                       | D |
+        # recursiveMAIN |->[OSINT]-+>[DOMAIN]-+>[SUBDOMAIN]-+>[SERVER]/[EXPLOITATION]                           | A |
+        #                                                                                                       | T |
+        #                                                                                                       | I |
+        #                                                                                                       | O |
+        #                                                                                                       | N |
+        #
+```
 
 # Wordlists
 https://github.com/danielmiessler/SecLists  
@@ -235,10 +260,18 @@ GithubLeaks
 install.sh
 ```
 
+# Research 
+
+### Looking for, maybe make scope checker
+  
+subdomain scraping Cloud ranges bash script  
+https://github.com/projectdiscovery/wappalyzergo  
+https://labs.detectify.com/2021/11/30/hakluke-creating-the-perfect-bug-bounty-automation/  
+consider https://github.com/cure53/Flashbang.git
+
+
 # Old but not forgotten
 This section is just a reminder of stuff I tried or found better but may return to
-
-
 
 #### Gone but there anyway
 
