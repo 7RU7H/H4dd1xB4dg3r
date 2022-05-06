@@ -303,7 +303,7 @@ async def domain_enumeration_Assetfinder(domain):
 
 # Historic domain/subdomain list building
 async def domain_enumeration_Waybackurls():
-    print(f"Running indenpendent waybackurls")      
+    print(f"Running independent waybackurls")      
     process = subprocess.Popen(["scripts/script_waybackurl.sh", "{target_list}"], stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
     process.wait()
     print(f"Completed independent waybackurls")   
@@ -449,7 +449,7 @@ async def subdom_Util_gospider(input_path):
     print(f"")    
 
 # Bash script to run this, due to subprocess.open([ARG,ARG]):
-#grep $@ -Eo '(http|https)://[^/"]+' | anew
+#grep -r -Eo '(http|https)://[^/"]+' $@ | anew
 # add to subdomain lists
 
 await run_parallelism(
@@ -470,12 +470,14 @@ await run_parallelism(
 #shosubgo, when I get shodan key
 #async def subdomain_scrapping():
 
-#subscrapper requires api key
-async def subdomain_scrapping_Subscrapper():
+#subscraper requires api key
+async def subdomain_scrapping_Subscraper():
 
 async def subdomain_scrapping_Amass():
 
 async def subdomain_scrapping_Subfinder():
+
+
 
 # github subdomain scraps github
 # kingofbugbounty tips
@@ -567,7 +569,7 @@ async def web_scanning_Nikto(target_list, output_path):
         urls = f.read()
         for target in urls:
             print(f"Starting Nikto scanning on {target}")
-            process = subprocess.Popen(["nikto", "-h {target} -c -o {output_path}"], stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+            process = subprocess.Popen(["nikto", "-h {target} -C all -o {output_path}"], stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
             process.wait()
             print(f"Finished Nikto scanning on {target}")
         print(f"Finished all Nikto scanning within {target_list}")
