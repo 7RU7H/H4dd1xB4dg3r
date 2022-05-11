@@ -1,5 +1,5 @@
 # H4dd1xB4dg3r
-Automated Bug Bounty Recon Setup
+Automated Bug Bounty Recon/Analysis Setup
 
 ![Tests](https://github.com/mCodingLLC/SlapThatLikeButton-TestingStarterProject/actions/workflows/tests.yml/badge.svg)
 
@@ -15,7 +15,7 @@ It is motivated by the hope to find some bugs for fun, accolade and profit in th
 The control flow similar to the sections of questions to ask at various stages for bug hunting.
 This heavily inspired from talks Bug Hunters methodology version 4, various automation, tool usage talks, articles by Daniel Messlier.
 
-Eventual all the documentation below will be archived for now it serves a nice place for me to put this stuff.
+Eventually all the documentation below will be archived for now it serves a nice place for me to put this stuff.
 
 # Credit!
 
@@ -37,6 +37,11 @@ https://github.com/KingOfBugbounty/KingOfBugBountyTips
 https://github.com/s0md3v/Arjun
 https://github.com/m4ll0k/SecretFinder
 https://github.com/m4ll0k/BBTz
+https://github.com/RetireJS/retire.js # analyses JS libraries
+https://github.com/Grunny/zap-cli # Spider with zap check https://mydeveloperplanet.com/2021/04/28/automated-pen-testing-with-zap-cli/
+Content Disovery https://epi052.github.io/feroxbuster-docs/docs/configuration/command-line/
+Assetnote
+
 
 # THE PLAN:
 
