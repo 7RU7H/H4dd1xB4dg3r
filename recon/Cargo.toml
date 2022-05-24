@@ -1,0 +1,12 @@
+[package]
+name = "untitled"
+version = "0.1.0"
+authors = [" "]
+
+[dependecies]
+async-std = "1.2.0"
+clap = " "
+futures = { version = "0.3.*"}
+tokio = {version = "0.2.*", features = ["full"] }
+log = "0.4.*"
+env_logger = "0.7.*"

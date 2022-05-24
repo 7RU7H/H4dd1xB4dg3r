@@ -1,8 +1,0 @@
-//make really good wordlists
-	//Qualities to aim for: 
-	//uniqueness, when to uniq
-	//small -> split fuzzing to a fuzz library -> word permutations in shorter lists in a themed directory
-	//relevancy 1. -> good scrapping -> uniq generic catergorisation-> 
-	//relevancy 2. -> catergorisation{domain-sub-server directory wordlist-directory per (organise by level)}
-
-#TODO tomnomnom talk digest redigest research update 	
