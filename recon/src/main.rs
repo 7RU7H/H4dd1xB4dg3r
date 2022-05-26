@@ -144,12 +144,17 @@ fn main() -> Result<()> {
             //cms related scan
             }
         }
+        recon_vhost() //consider await !!
     }
     if smbservice_found {
         smb_analysis()
     }
 
 
+}
+
+async fn recon_vhost() -> Result<TYPE> {
+    let gobuster_vhost = run_tool()
 }
 
 async fn recon_webservices() -> Result<TYPE> {
