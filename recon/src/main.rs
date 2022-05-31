@@ -20,6 +20,46 @@ struct Args {
     target: String,
 }
 
+struct Project_Management {
+    project_name: String;
+    project_working_directory: String;
+}
+
+impl Project_Management {
+   fn create_directory_tree() {
+    
+   }
+}
+
+
+struct Target_Info {
+    IP_address: String;
+    hostname_discovered: bool;
+    hostname: String;
+}
+
+impl Target_Info {
+
+}
+
+struct Connection_Tests {
+    ping_able: bool;
+    ping_ttl: u8; //grep string -> conv u8 (OS check)
+    traceroute_able: bool;
+    nmap_sn_up: bool;
+}
+
+
+    cms_discovered: struct;
+
+// cms_discovered
+//  wordpress_site: Bool,
+}
+
+
+
+
+
 async fn heartbeat() -> Result<String> {
     let ctrl_c_events = ctrl_channel()?;
     let ticks = tick(Duration::from_secs(1));
@@ -122,16 +162,23 @@ fn main() -> Result<()> {
     info!("starting up");
     warn!("oops, nothing implemented!");
     
-    target_initial_tests()
-    output_directory_creation()
+    initial_local_tests()
     
-    heartbeat().await;
-    progress_bar().await;
+    let current_project = Project_Management {
+    
+    };
+    current_project.create_directory_tree();
+
+
+    let heartbeat_future =  heartbeat().await;
+    let progress_bar_future = progress_bar().await;
 
     let init_test = connection_test();
     block_on(init_test);
+    //Connection_tests data
+
     let port_scan = port_scanning();
-        //output
+
     collect_service_data();
     run_secondary_nmap().await;
 
@@ -139,7 +186,7 @@ fn main() -> Result<()> {
     if webservice_found {
         construct_url()
         recon_webservices()
-        if cms_found {
+        if   // cms_found {
             //target.cms_identified -> tool_name
             //cms related scan
             }
@@ -147,12 +194,13 @@ fn main() -> Result<()> {
         recon_vhost() //consider await !!
     }
     if smbservice_found {
-        smb_analysis()
+        recon_smb()
     }
 
 
+    futures::join!(heartbeat_future, progress_bar_future)
 }
-
+ 
 async fn recon_vhost() -> Result<TYPE> {
     let gobuster_vhost = run_tool()
 }
@@ -166,7 +214,7 @@ async fn recon_webservices() -> Result<TYPE> {
 
 async fn web_analysis() -> Result<TYPE> {
     let nikto_x = run_tool().await;
-    let nuclei_scan = runt_tool().await;
+    let nuclei_scan = run_tool().await;
 }
 
 async fn web_content_discovery_feroxbuster() -> Result<TYPE> {
@@ -177,9 +225,13 @@ async fn web_content_discovery_feroxbuster() -> Result<TYPE> {
     let url_listing = sort_found_urls();
 }
 
+async fn cms_switch_wpscan() -> Result<TYPE> {
+    let wpscan_out = run_tool().await;
+}
+
     //web related - managed parallelism based on tool
         //gospider
-        //nikto, nuclie
+        //nikto, nuclei
         //cms scan
         //feroxbuster
             //nmap scripting
@@ -204,8 +256,8 @@ async fn connection_test() -> Result<TYPE> {
 }
 
 async fn port_scanning() -> Result<TYPE> {
-    //masscan naabu_output = run_tool().await();
-    initial_nmap = run_initial_nmap().await();
+    //masscan naabu_output = run_tool().await;
+    initial_nmap = run_initial_nmap().await;
     futures::join!(//naabu_output, initial_nmap);
 }
 
@@ -228,11 +280,10 @@ async fn run_secondary_nmap() -> Result<TYPE> {
 }
 
 async fn collect_service_data() -> Result<TYPE> {
-    let all_ports = collect_portlist().await();
-    let service_list = collect_services.await();
+    let all_ports = collect_portlist().await;
+    let service_list = collect_services().await;
     futures::join!(all_ports, service_list);
 }
 
-
-async fn service_analysis_cntl
+async fn service_analysis_cntl()
 
