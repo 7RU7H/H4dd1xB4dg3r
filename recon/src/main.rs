@@ -2,8 +2,10 @@ use std::process::Command;
 use console::style;
 use log::{info, warn};
 use std::{thread, time::Duration};
+use std::fs;
 use anyhow::Result;
-use crossbeam_channel::{bounded, tick, Receiver, select}; 
+use crossbeam_channel::{bounded, tick, Receiver, select};
+use string::contains
 
 extern crate clap
 use clap::{Arg, App};
@@ -20,45 +22,74 @@ struct Args {
     target: String,
 }
 
-struct Project_Management {
+#[derive(Debug)]
+struct ProjectManagement {
     project_name: String;
     project_working_directory: String;
+    target: String;
+    target_type: ;
 }
 
-impl Project_Management {
-   fn create_directory_tree() {
-    
+impl ProjectManagement {
+   fn create_directory_tree(tool_list) {
+        let mut root_dir: String = self.project_working_directory;
+        root_dir.push_str(self.project_name);
+        fs::create_dir(root_dir)?;
+        Ok(())
+        for tool in &tool_list {
+           fs::create_dir();
+           Ok(())
+        }
+        println!("The output for this project will be found at {} for the target: {}", self.project_working_directory, self.target);
+   }
+
+   fn set_target_type() {
+       match self.target {
+           None => None
+               //TODO check if this works and add CIDR notation and single ip variation
+           Some() => if self.target.contains(".txt") => self.target_type =
+
+       return 
    }
 }
 
-
-struct Target_Info {
-    IP_address: String;
-    hostname_discovered: bool;
-    hostname: String;
-}
-
-impl Target_Info {
-
-}
-
-struct Connection_Tests {
+struct TargetInfo {
+    ip_address: String;
+// ConnectionTests 
     ping_able: bool;
     ping_ttl: u8; //grep string -> conv u8 (OS check)
     traceroute_able: bool;
     nmap_sn_up: bool;
+
+    hostname_discovered: bool;
+    hostname: String;
+
 }
 
+impl TargetInfo {
+//ConnectionTestFNs
+    fn is_pingable
+    fn grep_ttl
+    fn is_traceroutable
+    fn is_nmap_ns
+//hostnameFNs
+    fn found_hostname
+    fn grep_hostname
+//ServicesFNs
+    fn found_cms
+    fn found_ftp
+    fn found_http
+    fn found_https
+    fn found_multiport_web
+    fn found_smb
+    fn found_smtp
+    fn found_snmp
 
-    cms_discovered: struct;
+}
+
 
 // cms_discovered
 //  wordpress_site: Bool,
-}
-
-
-
-
 
 async fn heartbeat() -> Result<String> {
     let ctrl_c_events = ctrl_channel()?;
@@ -140,22 +171,25 @@ fn main() -> Result<()> {
         .version("0.1.0")
         .author("7ru7h")
         .about("Automated Recon")
-        .arg(Arg::with_name("PROJECT_PATH")
+        .arg(Arg::with_name("PROJECT_NAME")
                  .required(true)
                  .takes_value(true)
                  .index(1)
-                 .help("Provide path ending with your proposed name of the project"))
+                 .help("Provide a proposed name for the project"))
+        .arg(Arg::with_name("PROJECT_PATH")
+                 .required(true)
+                 .takes_value(true)
+                 .index(2)
+                 .help("Provide a path to the working directory where data is to stored and used"))
         .get_matches();
         .arg(Arg::with_name("TARGET")
                  .required(true)
                  .takes_value(true)
-                 .index(2)
+                 .index(3)
                  .help("IP address, range or domain name"))
         .get_matches();
-    let project_path = matches.value_of("PROJECT_PATH").unwrap();
-    let target = matches.value_of("TARGET").unwrap();
-    Ok(())
-    println!("The output will be found at {} for the target: {}", project, target);
+
+    
 
     env_logger::init();
     //logging
@@ -164,9 +198,14 @@ fn main() -> Result<()> {
     
     initial_local_tests()
     
-    let current_project = Project_Management {
-    
+    let current_project = ProjectManagement {
+        project_name: matches.value_of("PROJECT_NAME").unwrap()
+        project_working_directory: matches.value_of("PROJECT_PATH").unwrap()
+        target: matches.value_of("TARGET").unwrap()
+        target_type = 0;
     };
+
+    current_porject.target_type = current_project.set_target_type();
     current_project.create_directory_tree();
 
 
@@ -186,7 +225,8 @@ fn main() -> Result<()> {
     if webservice_found {
         construct_url()
         recon_webservices()
-        if   // cms_found {
+        if  {
+            // cms_found {
             //target.cms_identified -> tool_name
             //cms related scan
             }
