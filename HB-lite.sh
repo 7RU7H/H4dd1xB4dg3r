@@ -11,6 +11,8 @@ project_name=$2
 amass intel -org $organisation -max-dns-queries 2500 | awk -F, '{print $1}' ORS=',' | sed 's/,$//' | xargs -P3 -I@ -d ',' amass intel -asn @ -max-dns-queries 2500''
 wait
 
+# Domain name grep into array
+
 # osint
 theHarvester -d $domain -g -r -f $theHavester_output
 
