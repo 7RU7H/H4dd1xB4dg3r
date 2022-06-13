@@ -13,9 +13,7 @@ class Target:
     #domain_name_list: dict - listing in text file is good for tools, !!
     # TODO 
     ansnum: dict 
-    #out-of-scope-related
-    #blacklisted_domains: #TODO figure it out!!
-    #blacklisted_subdomains #TODO figure it out!!!
+    out_of_scope_path: str
     project_name_path: str
     project_name: str
     badger_location: str
@@ -59,8 +57,9 @@ class Target:
         os.mkdir({project_name}/reports)
         os.mkdir({project_name}/domainmap)
         os.mkdir({project_name}/wordlists)
-        for tool in toollist:
-            os.mkdir({project_name}/tool)
+        for tool in self.toollist:
+            tool_path = f"{path}/{project_name}/{tool}"
+            os.mkdir()
         print(f"Directory forest completed a {path}")
 
     # TODO
@@ -77,7 +76,22 @@ class Target:
 
          
         
-    def check_out_of_scope():
+    def check_out_of_scope(url):
+        print(f"Checking if {url} is out-of-scope")
+        if url.contains("https://"):
+            no_proto_url = url[7:]
+        else:
+            no_proto_url = url[6:]
+        tidy_url = no_proto_url.split('/')
+        with open(self.out_of_scope_path, "r") as f:
+            blacklist = f.read()
+            for bl_url in blacklist:
+                if bl_url.Contains(tidy_url):
+                    print(f"Out-of-scope url {url} found!")
+                    return true
+        print(f"Out-of-scope url {url} not found")
+        return false
+
 
     # TODO refactor to one function, concat_domainnames, concat_urls!
 
@@ -272,13 +286,20 @@ def main():
                         type=str, 
                         required=True, 
                         help='Provide a target organisation to OSINT')
+    
+    parser.add_argument('-d', 
+                        metavar='domain_name', 
+                        action='store', 
+                        type=str, 
+                        required=True, 
+                        help='Provide a domain name used as intial passive recon target')
 
     parser.add_argument('-n', 
                         metavar='project_name', 
                         action='store', 
                         type=str, 
                         required=True, 
-                        help='Provide a project name used a root directory of the direectory tree')
+                        help='Provide a project name used a root directory of the directory tree')
 
     parser.add_argument('-p', 
                         metavar='project_path', 
@@ -286,6 +307,14 @@ def main():
                         type=str, 
                         required=True, 
                         help='Provide a valid file path to store project')
+    
+    parser.add_argument('-s', 
+                        metavar='scope', 
+                        action='store', 
+                        type=str, 
+                        required=True, 
+                        help='Provide a valid file path to .txt file contain out-of-scope urls, one per line')
+
 
     args = parser.parse_args()
 
