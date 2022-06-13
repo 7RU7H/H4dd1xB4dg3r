@@ -35,10 +35,10 @@ impl ProjectManagement {
         let mut root_dir: String = self.project_working_directory;
         root_dir.push_str(self.project_name);
         fs::create_dir(root_dir)?;
-        Ok(())
+        Ok((root_dir))
         for tool in &tool_list {
-           fs::create_dir();
-           Ok(())
+           fs::create_dir()?;
+           Ok((root_dir, tool))
         }
         println!("The output for this project will be found at {} for the target: {}", self.project_working_directory, self.target);
    }
@@ -64,6 +64,19 @@ struct TargetInfo {
     hostname_discovered: bool;
     hostname: String;
 
+    dns_discovered: bool;
+    dns: String;
+
+    domain_discovered bool;
+    domain_name: String;
+
+    http_discovered bool;
+    http_ports: String;
+
+    https_discovered bool;
+    https_ports: String;
+
+
 }
 
 impl TargetInfo {
@@ -78,6 +91,9 @@ impl TargetInfo {
 //ServicesFNs
     fn found_cms
     fn found_ftp
+    fn found_domainname
+    fn grep_domainname
+    fn found_dns
     fn found_http
     fn found_https
     fn found_multiport_web
@@ -241,6 +257,47 @@ fn main() -> Result<()> {
     futures::join!(heartbeat_future, progress_bar_future)
 }
  
+    
+async fn connection_test() -> Result<TYPE> {
+    let ping_output = run_tool().await;
+    let nmap_sn_pn = run_tool().await;
+    let traceroute = run_tool().await;
+}
+
+async fn port_scanning() -> Result<TYPE> {
+    //masscan naabu_output = run_tool().await;
+    initial_nmap = run_initial_nmap().await;
+    futures::join!(//naabu_output, initial_nmap);
+}
+
+async fn run_initial_nmap() -> Result<TYPE> {
+    //-sS and -Pn flag additions
+    let nmap_extensive_output = run_tool().await;
+}
+
+async fn run_udp_nmap() -> Result<TYPE> {
+    //-sS and -Pn flag additions
+    //SPEED on this will take a while!
+    let nmap_udp_output = run_tool().await;
+}
+
+async fn run_secondary_nmap() -> Result<TYPE> {
+    //-sS and -Pn flag additions
+    let nmap_discovery_output = run_tool().await;
+    let nmap_vuln_output = run_tool().await;
+    futures::join!(nmap_discovery_output, nmap_vuln_output;
+}
+
+async fn collect_service_data() -> Result<TYPE> {
+    let all_ports = collect_portlist().await;
+    let service_list = collect_services().await;
+    futures::join!(all_ports, service_list);
+}
+
+async fn service_analysis_cntl()
+
+
+
 async fn recon_vhost() -> Result<TYPE> {
     let gobuster_vhost = run_tool()
 }
@@ -288,42 +345,4 @@ async fn cms_switch_wpscan() -> Result<TYPE> {
 //struct to store extracted data
 
 //methods?
-    
-async fn connection_test() -> Result<TYPE> {
-    let ping_output = run_tool().await;
-    let nmap_sn_pn = run_tool().await;
-    let traceroute = run_tool().await;
-}
-
-async fn port_scanning() -> Result<TYPE> {
-    //masscan naabu_output = run_tool().await;
-    initial_nmap = run_initial_nmap().await;
-    futures::join!(//naabu_output, initial_nmap);
-}
-
-async fn run_initial_nmap() -> Result<TYPE> {
-    //-sS and -Pn flag additions
-    let nmap_extensive_output = run_tool().await;
-}
-
-async fn run_udp_nmap() -> Result<TYPE> {
-    //-sS and -Pn flag additions
-    //SPEED on this will take a while!
-    let nmap_udp_output = run_tool().await;
-}
-
-async fn run_secondary_nmap() -> Result<TYPE> {
-    //-sS and -Pn flag additions
-    let nmap_discovery_output = run_tool().await;
-    let nmap_vuln_output = run_tool().await;
-    futures::join!(nmap_discovery_output, nmap_vuln_output;
-}
-
-async fn collect_service_data() -> Result<TYPE> {
-    let all_ports = collect_portlist().await;
-    let service_list = collect_services().await;
-    futures::join!(all_ports, service_list);
-}
-
-async fn service_analysis_cntl()
 
