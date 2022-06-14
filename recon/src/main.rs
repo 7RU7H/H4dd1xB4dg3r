@@ -76,6 +76,7 @@ struct TargetInfo {
     https_discovered bool;
     https_ports: String;
 
+    unknown_ports: Vec;
 
 }
 
@@ -100,6 +101,7 @@ impl TargetInfo {
     fn found_smb
     fn found_smtp
     fn found_snmp
+    fn unknown_ports
 
 }
 
@@ -239,7 +241,7 @@ fn main() -> Result<()> {
 
     service_analysis();
     if webservice_found {
-        construct_url()
+        construct_urls()
         recon_webservices()
         if  {
             // cms_found {
@@ -292,6 +294,12 @@ async fn collect_service_data() -> Result<TYPE> {
     let all_ports = collect_portlist().await;
     let service_list = collect_services().await;
     futures::join!(all_ports, service_list);
+}
+
+async fn amap_unknown_ports(unknown_port_list: Vec) -> Result<TYPE> {
+    for elem in unknown_port_list {
+          //  run_tool().await;
+    }
 }
 
 async fn service_analysis_cntl()

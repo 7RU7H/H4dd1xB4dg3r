@@ -9,7 +9,6 @@ class Target:
     domain_root: str
     cidr_range: str
     domain_name: str
-    email_inscope: bool
     # TODO BIG DESIGN CHOICES
     #domain_name_list: dict - listing in text file is good for tools, !!
     # TODO 
@@ -149,13 +148,6 @@ class Target:
         process.wait()
         print("Dictionary containing ASN numbers constructed")
 
-
-    async def acqRec_Util_concatenate_domain_names():
-        # scrap new domains
-        # newdomains -> secondary_list
-        # newdomains -> big_list
-        # TODO refactor to one function!
-
     # ANS enumeration
     async def ans_enumeration_Amass(self.asnum, output_path, log_path):
         print("Beginning Amass ANS enumeration")
@@ -178,11 +170,12 @@ class Target:
     # Get an API key from WHOXY.com
     # Set that API key in a file named domLink.cfg in the same directory.
 
-    async def reverse_whois_DOMLink(targets, output_path):
+    async def reverse_whois_DOMLink(target_list, output_path):
+        print("Beginning reverseWHOIS with Domlink")
         with open(target_list , "r") as f:
             targets = f.read()
             for target in targets:
-                print("Beginning reverseWHOIS with Domlink")
+                print("Performing reverseWHOIS with Domlink against {target}")
                 process = subprocess.Popen(["python /opt/DomLink/domLink.py","-D {target} -o {output_path}" ], stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
                 process.wait()
                 print(f"ReverseWHOIS for {target} with DomLink completed")
@@ -201,7 +194,8 @@ class Target:
         #scrap builtwith.com/relationship
 
     # Target must be a file
-    async def analyse_relationships_findrelationships(project_name, badger_location, targets):
+    # cat $3 | python3 $2/scripts/findrelationships.py 0> $1/findrelationships/findrelationships_output.txt"
+    async def analyse_relationships_findrelationships(project_name, badger_location, target_list):
         print("Findrealtionships.py Started")
             with open(target_list , "r") as f:
                 targets = f.read()
@@ -211,8 +205,6 @@ class Target:
                     print(f"Findrelationships.py completed analysis of {target}")
         print("Findrelationships.py completed")
 
-    # #!/bin/bash
-    # cat $3 | python3 $2/scripts/findrelationships.py 0> $1/findrelationships/findrelationships_output.txt"
 
     # Dorking - SCRAPPAGE!
     # async def dork_target_xtext():
@@ -253,8 +245,7 @@ class Target:
         await run_sequence(
                 #scope_init_bbscope()
                     await run_parallelism(
-                        if self.email_inscope:
-                            osint_theHarvester()
+                        osint_theHarvester()
                         # scrapping acquisition recon function(S?)
                         # metabigor!!
                         await run_sequence(
@@ -330,12 +321,7 @@ def main():
                         required=True, 
                         help='Provide a valid file path to .txt file contain out-of-scope urls, one per line')
     
-    parser.add_argument('-h', 
-                        metavar='email_inscope', 
-                        action='store', 
-                        type=bool, 
-                        required=True, 
-                        help='If email addresses are in scope use -h flag')
+
 
 
 
