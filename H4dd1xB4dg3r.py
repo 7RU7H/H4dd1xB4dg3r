@@ -9,6 +9,7 @@ class Target:
     domain_root: str
     cidr_range: str
     domain_name: str
+    email_inscope: bool
     # TODO BIG DESIGN CHOICES
     #domain_name_list: dict - listing in text file is good for tools, !!
     # TODO 
@@ -21,10 +22,12 @@ class Target:
 
     def __init__(self):
         organisation_root = args.organisation
+        domain_root = args.domain_name
         project_name_path = args.project_path 
         project_name = args.project_name
-        badger_location = os.pwd()
-        toollist = ['amass', 'domLink', 'assetfinder', 'waybackurls', 'theharvester', 'findrelationships']
+        email_inscope = args.email_inscope
+        # badger_location
+        toollist = ['amass', 'domLink', 'assetfinder', 'waybackurls', 'theHarvester', 'findrelationships']
 
     async def run_sequence(*functions: Awaitable[Any]) -> None:
         for function in functions:
@@ -41,8 +44,22 @@ class Target:
                 create_directory_forest()
 
                 )
-    
+
+    # Todo script check and called tool checks seperate
+    # Script check and 
     async def check_valid_install():
+        install_check_theHarvester = subprocess.Popen(["theHarvester", "-h"], stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+        process.wait()
+        install_check_amass = subprocess.Popen(["amass", "-h"], stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+        process.wait()
+        install_check_domlink = subprocess.Popen(["python /opt/DomLink/domLink.py","-h" ], stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+        process.wait()
+        install_check_findrelationships = subprocess.Popen(["scripts/script_findrelationships_multi.sh", ""], stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+        process.wait()
+        install_check_assetfinder = subprocess.Popen(["assetfinder", "-h"], stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+        process.wait()
+        install_check_waybackurl = subprocess.Popen(["scripts/script_waybackurl.sh", ""], stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+        process.wait()
 
     async def create_directory_forest(project_name, path):
         # All tool names
@@ -103,7 +120,7 @@ class Target:
     # -s for shodan
     async def osint_theHarvester(target, output_path):
         print(f"Beginning theHarvester against {target}")
-        process = subprocess.Popen(["theHarvester", "-d {target} -v -n -g -r -f {output_path} --screenshot {output_path}" ], stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+        process = subprocess.Popen(["theHarvester", "-d {target} -v -n -g -r -f {output_path} --screenshot {output_path}"], stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
         process.wait()
         print(f"theHarvester OSINT against {target} complete, check {output_path}")
 
@@ -120,18 +137,18 @@ class Target:
 
     async def acquisition_recon_Amass_CIDR(Target.cidr_range, output_path, log_path):
         print("Beginning Amass intel -src -cidr {}")
-        process = subprocess.Popen(["amass", "intel -src -cidr {Target.cidr_range} -max-dns-queries 2500 -oA {output_path} -l {log_path}" ], stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+        process = subprocess.Popen(["amass", "intel -src -cidr {Target.cidr_range} -max-dns-queries 2500 -oA {output_path} -l {log_path}"], stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
         process.wait()
         print("Amass intel -src -cidr complete")
 
     # Acquistion Recon Utility
+    # cat $1 awk -F, '{print $1}' ORS=',' | sed 's/,$//' | xargs -P3 -I@ -d ',' > $2
     async def acqRec_Util_amass_find_ans(intel_output_path, outpath_file):
         print("Getting ASN number from amass intel output")
         process = subprocess.Popen(["scripts/script_amassASN_util.sh", "{intel_output_path} {output_file}"], stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
         process.wait()
         print("Dictionary containing ASN numbers constructed")
 
-    # cat $1 awk -F, '{print $1}' ORS=',' | sed 's/,$//' | xargs -P3 -I@ -d ',' > $2
 
     async def acqRec_Util_concatenate_domain_names():
         # scrap new domains
@@ -183,17 +200,13 @@ class Target:
     # async def analyse_relationships():
         #scrap builtwith.com/relationship
 
- #with open(target_list , "r") as f:
-  #      urls = f.read()
-   #     for target in urls:
-
     # Target must be a file
     async def analyse_relationships_findrelationships(project_name, badger_location, targets):
         print("Findrealtionships.py Started")
             with open(target_list , "r") as f:
                 targets = f.read()
                 for target in targets:
-                    process = subprocess.Popen(["scripts/script_findrelationships_multi.sh", "{project_name} {badger_location} {target}", stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+                    process = subprocess.Popen(["scripts/script_findrelationships_multi.sh", "{project_name} {badger_location} {target}"], stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
                     process.wait()
                     print(f"Findrelationships.py completed analysis of {target}")
         print("Findrelationships.py completed")
@@ -213,7 +226,7 @@ class Target:
         with open(target_list , "r") as f:
             targets = f.read()
             for target in targets:
-                process = subprocess.Popen(["assetfinder", "{target} 0> {output_path}/assetfinder_output.txt", stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+                process = subprocess.Popen(["assetfinder", "{target} 0> {output_path}/assetfinder_output.txt"], stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
                 process.wait()
                 print(f"Assetfinder analysis against {target}")
         print("Assetfinder completed")
@@ -240,8 +253,10 @@ class Target:
         await run_sequence(
                 #scope_init_bbscope()
                     await run_parallelism(
-                        osint_theHarvester()
+                        if self.email_inscope:
+                            osint_theHarvester()
                         # scrapping acquisition recon function(S?)
+                        # metabigor!!
                         await run_sequence(
                             acquisition_recon_Amass_ORG()
                             acquisition_recon_Amass_CIDR()
@@ -314,6 +329,14 @@ def main():
                         type=str, 
                         required=True, 
                         help='Provide a valid file path to .txt file contain out-of-scope urls, one per line')
+    
+    parser.add_argument('-h', 
+                        metavar='email_inscope', 
+                        action='store', 
+                        type=bool, 
+                        required=True, 
+                        help='If email addresses are in scope use -h flag')
+
 
 
     args = parser.parse_args()
