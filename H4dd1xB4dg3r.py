@@ -1,5 +1,5 @@
 import multiprocessing as mp
-import threading, os, sys, time, dataclasses, subprocess, logging, argparse
+import threading, os, sys, time, dataclasses, subprocess, logging, argparse, re
 # import workspace_management internalise it in the class
 
 # slots break in multiple inheritance AVOID, 20% efficiency over no slot dict
@@ -8,7 +8,8 @@ class Target:
     organisation_root: str    
     domain_root: str
     cidr_range: str
-    domain_name: str
+    domain_names_list: list
+    subdomain_names_list: list
     # TODO BIG DESIGN CHOICES
     #domain_name_list: dict - listing in text file is good for tools, !!
     # TODO 
@@ -18,14 +19,17 @@ class Target:
     project_name: str
     badger_location: str
     toollist: list
+    domain_name_file_path: str
 
     def __init__(self):
         organisation_root = args.organisation
         domain_root = args.domain_name
         project_name_path = args.project_path 
         project_name = args.project_name
-        email_inscope = args.email_inscope
+        domain_names_list += args.domain_name
         # badger_location
+        out_of_scope_path = args.out_of_scope_path
+        recursive_osint_count = args.recursive_osint_count
         toollist = ['amass', 'domLink', 'assetfinder', 'waybackurls', 'theHarvester', 'findrelationships']
 
     async def run_sequence(*functions: Awaitable[Any]) -> None:
@@ -60,22 +64,18 @@ class Target:
         install_check_waybackurl = subprocess.Popen(["scripts/script_waybackurl.sh", ""], stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
         process.wait()
 
-    async def create_directory_forest(project_name, path):
-        # All tool names
-        # All found URLs
-        # All custom wordlists
-        # All stardardised wordlists -> transform
-        # All logs
-        # Domain_map
-        # Domain_wordlist mapping
-        os.mkdir({project_name})
-        os.mkdir({project_name}/log)
-        os.mkdir({project_name}/reports)
-        os.mkdir({project_name}/domainmap)
-        os.mkdir({project_name}/wordlists)
+    def create_directory_forest(project_name, path):
+        os.mkdir({path}/{project_name})
+        os.mkdir({path}/{project_name}/log)
+        os.mkdir({path}/{project_name}/reports)
+        os.mkdir({path}/{project_name}/domainmap)
+        os.mkdir({path}/{project_name}/wordlists)
+        os.mkdir({path}/{project_name}/wordlists/scrappings)
+        os.mkdir({path}/{project_name}/wordlists/custom)
+        os.mkdir({path}/{project_name}/wordlists/utility)
         for tool in self.toollist:
             tool_path = f"{path}/{project_name}/{tool}"
-            os.mkdir()
+            os.mkdir(tool_path)
         print(f"Directory forest completed a {path}")
 
     # TODO
@@ -85,14 +85,13 @@ class Target:
             f = open(target_list , "r")
             address_list = f.read()
             for addr in address_list:
-                os.mkdir({project_name}/domainmap/{addr}/wordlists)
+                os.mkdir({path}/{project_name}/domainmap/{addr}/wordlists)
         else:
-            os.mkdir({project_name}/domainmap/{address}/wordlists)
-        print(f"Directory structure added to {project_name}/domainmap")
+            os.mkdir({path}/{project_name}/domainmap/{address}/wordlists)
+        print(f"Directory structure added to {path}/{project_name}/domainmap")
 
          
-        
-    def check_out_of_scope(url):
+    async def check_out_of_scope(url):
         print(f"Checking if {url} is out-of-scope")
         if url.contains("https://"):
             no_proto_url = url[7:]
@@ -108,11 +107,43 @@ class Target:
         print(f"Out-of-scope url {url} not found")
         return false
 
+    async def handle_domain_name(domain_name):
+        temp_domain = trim_excess_from_domain_name(domain_name)
+        if check_uniq_domain_name(temp_domain):
+            add_new_domain_name()
+
+    async def trim_excess_from_domain_name(url):
+        rm_proto_and_dir = str(re.findall(r':\/\/(.[^/]+)', url))
+        unlist = rm_proto_and_dir[0]
+        dots_split = re.split('[.]', rm_proto_and_dir.strip())
+        tld = str(re.sub(r'[^a-z-A-Z0-9 ]', "", dots_split[-1]))
+        result = f"{str(dots_split[-2])}.{tld}"
+        return result
+
+    async def check_uniq_domain_name(domain_name):
+        if self.non_uniq_domain_names.contains(domain_name):
+            add_new_domain_name()
+        # else: check the queue and remove any that QUEUE 
+                
+    async def add_new_domain_name():
+        with open(self.domain_names_file_path, "a") as f:
+            f.write(domain_name)
+            self.non_uniq_domain_names += domain_name
+            print(f"Found a new domain name: {domain_name}")
+
+
+
+
+    # TODO consider how to consolidate
+    # TODO smart recursion so that it does not retread entirely but not only endpoints
+
+
 
     # TODO refactor to one function, concat_domainnames, concat_urls!
+    
 
-
-    def screenshotting():
+    
+    #def screenshotting():
 
     # OSINT
     # theHarvester
@@ -156,7 +187,7 @@ class Target:
             process = subprocess.Popen(["amass", "intel -asn {asn} -max-dns-queries 2500 -oA {output_path} -l {log_path}"], stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
             process.wait()
             print("Amass intel -asn {asn} complete")
-        print(f"Ans recon for {Target.asnum} completed")
+        print(f"Ans recon for {self.asnum} completed")
 
     # ANS enumeration Utility
     async def ansEnum_Util_concatenate_domain_names():
@@ -200,7 +231,7 @@ class Target:
             with open(target_list , "r") as f:
                 targets = f.read()
                 for target in targets:
-                    process = subprocess.Popen(["scripts/script_findrelationships_multi.sh", "{project_name} {badger_location} {target}"], stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+                    process = subprocess.Popen(["scripts/script_findrelationships_multi.sh", "{path}/{project_name} {badger_location} {target}"], stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
                     process.wait()
                     print(f"Findrelationships.py completed analysis of {target}")
         print("Findrelationships.py completed")
@@ -315,11 +346,19 @@ def main():
                         help='Provide a valid file path to store project')
     
     parser.add_argument('-s', 
-                        metavar='scope', 
+                        metavar='out_of_scope_path', 
                         action='store', 
                         type=str, 
                         required=True, 
                         help='Provide a valid file path to .txt file contain out-of-scope urls, one per line')
+    
+    parser.add_argument('-r', 
+                        metavar='recursive_osint_count', 
+                        action='store', 
+                        type=int, 
+                        required=True, 
+                        help='Provide an amount of times to recursively consildate and rerun tools on consolidated data')
+
     
 
 
@@ -328,7 +367,7 @@ def main():
     args = parser.parse_args()
 
     logging.basicConfig(level=logging.{}, filename='example.log', encoding='utf-8', level=logging.DEBUG)
-    log = logging.FileHandler('{project_name}.log')
+    log = logging.FileHandler('{path}/{project_name}.log')
     log.setLevel('')
     formatter = logging.Formatter('%(asctime)s  %(levelname)s %(tool)s %(message)s')
     log.setFormatter(formatter)
@@ -339,6 +378,8 @@ def main():
     logging.critical('')
 
     current_target = Target()
+
+    
    
 
 
