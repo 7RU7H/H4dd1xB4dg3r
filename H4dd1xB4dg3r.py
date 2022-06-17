@@ -30,7 +30,7 @@ class Target:
         # badger_location
         out_of_scope_path = args.out_of_scope_path
         recursive_osint_count = args.recursive_osint_count
-        toollist = ['amass', 'domLink', 'assetfinder', 'waybackurls', 'theHarvester', 'findrelationships']
+        toollist = ['amass', 'aquatone', 'domLink', 'assetfinder', 'waybackurls', 'theHarvester', 'findrelationships']
 
     async def run_sequence(*functions: Awaitable[Any]) -> None:
         for function in functions:
@@ -271,6 +271,19 @@ class Target:
             # newdomains -> secondary_list
             # newdomains -> big_list
             # TODO refactor to one function!
+
+    # Domain FLyerover with screenshots
+    async def aquatone_flyover(input_path, output_path):
+        print(f"Running Aquatone with listing {input_path}")      
+        process = subprocess.Popen(["scripts/aquatoneEverything.sh", "{input_path} {output-path}"], stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+        process.wait()
+        print(f"Completed Aquatone flyover with {input_path}")   
+
+
+
+    # cat $1 | aquatone -out $2/aquatone
+
+
  
     async def run():
         await run_sequence(
@@ -301,8 +314,12 @@ class Target:
                                 await run_parallelism(
                                     domain_enumeration_Waybackurls()
                                     domain_enumeration_Assetfinder()
-                                )
+                                    )
                                 domEnum_Util_concatenate_urls()
+                                #await run_parallelism(
+                                aquatone_flyover()
+                                # May wait paralell urls.txt, vulnerable.txt  and domains.txt
+                                #    )
                                 )
                             )
                         )
