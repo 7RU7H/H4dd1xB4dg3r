@@ -1,3 +1,4 @@
+#!/usr/bin/python
 import multiprocessing as mp
 import threading, os, sys, time, dataclasses, subprocess, logging, argparse, re
 # import workspace_management internalise it in the class
@@ -20,6 +21,8 @@ class Target:
     badger_location: str
     toollist: list
     domain_name_file_path: str
+    recon_ng_custom_resource_file: bool
+    recon_ng_resource_file_path: str
 
     def __init__(self):
         organisation_root = args.organisation
@@ -30,7 +33,11 @@ class Target:
         # badger_location
         out_of_scope_path = args.out_of_scope_path
         recursive_osint_count = args.recursive_osint_count
-        toollist = ['amass', 'aquatone', 'domLink', 'assetfinder', 'waybackurls', 'theHarvester', 'findrelationships']
+
+        # if custom recon-ng resource file path path set bool and path  else default resource file 
+        check_custom_recon_ng_file()
+
+        toollist = ['amass', 'aquatone', 'domLink', 'assetfinder', 'waybackurls', 'theHarvester', 'findrelationships', 'recon-ng']
 
     async def run_sequence(*functions: Awaitable[Any]) -> None:
         for function in functions:
@@ -45,13 +52,16 @@ class Target:
         await run_sequence(
                 check_valid_install()
                 create_directory_forest()
+                # recon-ng
 
                 )
 
-    # Todo script check and called tool checks seperate
+    # TODO script check and called tool checks seperate
     # Script check and 
     async def check_valid_install():
         install_check_theHarvester = subprocess.Popen(["theHarvester", "-h"], stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+        process.wait()
+        install_check_theHarvester = subprocess.Popen(["recon-cli", "-h"], stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
         process.wait()
         install_check_amass = subprocess.Popen(["amass", "-h"], stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
         process.wait()
@@ -154,14 +164,20 @@ class Target:
         process.wait()
         print(f"theHarvester OSINT against {target} complete, check {output_path}")
 
-    # Aquistion Recon 
+    async def osint_recon_ng(resource_file, target, output_path):
+        print(f"Beginning Recon-NG against {target}")
+        process = subprocess.Popen(["recon-cli", "-r {resource_file}"], stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+        process.wait()
+        print(f"Recon-NG OSINT against {target} check {output_path}")
+
+    # Acquistion Recon 
     async def acquistion_recon_wordlist_generation():
         #scrap crunchbase, wiki, google
         # GO GO GO
 
     async def acquisition_recon_Amass_ORG(Target.organisation_root, output_path, log_path):
         print("Beginning Amass intel -org")
-        process = subprocess.Popen(["amass", "intel -src -org {Target.organisation_root} -max-dns-queries 2500 -oA {output_path} -{logpath}"], stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+        process = subprocess.Popen(["amass", "intel -src -org {Target.organisation_root} -max-dns-queries 2500 -oA {output_path} -l {log_path}"], stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
         process.wait()
         print("Amass intel -src -org complete")
 
@@ -265,7 +281,7 @@ class Target:
     # This one does go to stdout
     #    cat $1 | waybackurls >> $2/waybackurl_out.txt
 
-    # Domain Enuemration Utility
+    # Domain Enumeration Utility
     async def domEnum_Util_concatenate_urls():   
             # scrap new domains
             # newdomains -> secondary_list
@@ -290,6 +306,7 @@ class Target:
                 #scope_init_bbscope()
                     await run_parallelism(
                         osint_theHarvester()
+                        osint_recon_ng()
                         # scrapping acquisition recon function(S?)
                         # metabigor!!
                         await run_sequence(
@@ -328,10 +345,10 @@ class Target:
 
 
 def main():
+   
 
-    
-    print("=====================================================================")
-    print("=====================================================================")
+    print("=======================================================================")
+    print("=======================================================================")
     print("")
     print("                                 mm          mm")
     print("*@@@@*  *@@@@**                *@@@        *@@@")
@@ -358,9 +375,9 @@ def main():
     print("               ::               ::     :::::  :::")
     print("               ::               :::: ::   ::::::")
     print("")
-    print("=====================================================================")
+    print("=======================================================================")
     print("OSINT Reconnaissance suite for Redteaming, Bug Bounties, etc"
-    print("=====================================================================")
+    print("=======================================================================")
 
     parser = argparse.ArgumentParser(prog='H4dd1xB4dg3r', 
                                     usage'%(prog)s [options] target', 
@@ -409,6 +426,14 @@ def main():
                         type=int, 
                         required=True, 
                         help='Provide an amount of times to recursively consildate and rerun tools on consolidated data')
+     
+    parser.add_argument('--recon-ng-custom', 
+                        metavar='custom_recon_ng_resource_file', 
+                        action='store', 
+                        type=str, 
+                        required=False, 
+                        help='Provide a custom recon-ng resource file, see default {badger_location} ')
+
 
     
 
