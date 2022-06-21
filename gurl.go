@@ -9,12 +9,10 @@ import (
         "os"
 )
 
-//Either make another tool to parse source code, probably
-//or find all the possible unique USEFUL output
-
-//channels!! all the channels
-
+//make optional http or dotTLDMap
 func grepFile(file string, patterns []byte) (int64 map[int]string) {
+//pattersMap http, dotTLDmap
+
         patCount := int64(0)
         artifacts := make(map[int]string)
         builder := strings.Builder{}
@@ -71,7 +69,6 @@ func appendToFile(content string){
 }
 
 
-
 func checkFileExists(path string) bool {
         _, err := os.Stat(path)
         if err == nil {
@@ -95,6 +92,7 @@ func printAndExit() {
 
 
 func checkArgs() bool {
+	//put all cli checks here for less clutter
 }
 
 func main() {
@@ -120,61 +118,55 @@ func main() {
         //CLI stuff is very minimal, need a -h for help -o output -i for input
 
         flag.StringVar(&helpFlag, "-h", "help", "")
-	flag.StringVar(&urltypeFlag, "-u", "needsurltype", "Enter a Url type: \"domain\", \"subdomain\", \"url-noproto\", \"url-full\"")
+	flag.StringVar(&urltypeFlag, "-u", "needsurltype", "Enter a Url type: \"domain\", \"subdomain\", \"noproto\", \"full\"")
 	flag.StringVar(&inputFileFlag, "-i", "needsinputfilepath", "")
-        flag.StringVar(&outputFileFlagFlag, "-o", "needsoutputfilepath", "")
+        flag.StringVar(&outputFileFlag, "-o", "needsoutputfilepath", "")
         flag.Parse()
         args := flag.Args()
-        if len(args) == 0 {
-		//Argument length 0
+	argsLen := len(args)
+        if argsLen != 6 {
+		//Argument length != 6
         	printAndExit()
 	}
 
         switch os.Args[1] {
         case "-h":
-
+		printAndExit()
         case "-u":
 		firstArgCorrect bool= true
-
+        default:
+		//Invalid positioning
+               printAndExit()
+        }
+	switch os.Args[3] {
 	case "-i":
-
+		secondArgCorrect bool= true
+        default:
+		//Invalid positioning
+                printAndExit()
+        }
+        switch os.Args[5] {
         case "-o":
+		thirdArgCorrect bool= true
 
         default:
 		//Invalid positioning
-                flag.PrintDefaults()
-                os.Exit(1)
+               printAndExit()
         }
-	switch os.Args[1] {
-        case "-h":
 
-        case "-u":
-		firstArgCorrect bool= true
+	//
+	switch  {
+        case "domain":
 
-	case "-i":
+        case "subdomain":
 
-        case "-o":
+	case "noproto":
 
-        default:
-		//Invalid positioning
-                flag.PrintDefaults()
-                os.Exit(1)
+        case "full":
+	default:
+		printAndExit()
         }
-        switch os.Args[1] {
-        case "-h":
 
-        case "-u":
-		firstArgCorrect bool= true
-
-	case "-i":
-
-        case "-o":
-
-        default:
-		//Invalid positioning
-                flag.PrintDefaults()
-                os.Exit(1)
-        }
 
 
 	userArgumentsCorrect = 
@@ -191,9 +183,46 @@ func main() {
 	toolOutputFileExists = 
 	if toolOutputFileExists != true { 
 	//invalid input file path  provided
-i	}	
+	}	
+
+
+
+	greppedResultsMap := grepFile(file,//pattern) 
+	selectByUrlType( ,greppedResultsMap)
+
 }
 
 
+func selectByUrlType(urlTypeSwitch int, urls map[int]string) {
+	//refactor into 
+	//http in bytes
+	//common .tld in bytes
+	
+//	"domain": -> regex [.tld]'/' -> '.'
+//	"subdomain": -> regex [.tld]'/' -> '//'
+//	"noproto": delimiteer '//'
+//	"full": raw grep
 
+
+//TODO refactor out
+//
+//edit map
+
+//write into file
+
+switch urlTypeSwitch
+case 0:
+case 1:
+case 2:
+case 3:
+	domainFormatting
+
+	subdomainFormating
+	noprotoFormatting
+	fullFormatting
+default:	
+	
+	
+
+}
 
