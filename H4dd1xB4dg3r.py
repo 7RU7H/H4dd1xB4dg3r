@@ -10,34 +10,60 @@ class Target:
     domain_root: str
     cidr_range: str
     domain_names_list: list
-    subdomain_names_list: list
-    # TODO BIG DESIGN CHOICES
-    #domain_name_list: dict - listing in text file is good for tools, !!
-    # TODO 
+    domain_names_historic: list
+    subdomains_list: list
+    subdomains_historic_file_path: str
     ansnum: dict 
     out_of_scope_path: str
-    project_name_path: str
+    project_name_file_path: str
     project_name: str
     badger_location: str
     toollist: list
     domain_name_file_path: str
-    recon_ng_custom_resource_file: bool
+    recon_ng_custom_resource_file_exists: bool
+    recon_ng_custom_file_checks: bool
     recon_ng_resource_file_path: str
 
+
     def __init__(self):
-        organisation_root = args.organisation
-        domain_root = args.domain_name
-        project_name_path = args.project_path 
-        project_name = args.project_name
-        domain_names_list += args.domain_name
-        # badger_location
-        out_of_scope_path = args.out_of_scope_path
-        recursive_osint_count = args.recursive_osint_count
+        self.organisation_root = args.organisation
+        self.domain_root = args.domain_name
+        self.toollist = ['amass', 'aquatone', 'domLink', 'assetfinder', 'waybackurls', 'theHarvester', 'findrelationships', 'recon-ng']
+        if path.exists({args.project_path}):
+            self.project_name_file_path = args.project_path
+        else:
+            # error
+        if path.exists({args.project_name}):
+            # error
+        else:
+            self.project_name = args.project_name
+
+        self.domain_names_list += args.domain_name
+        self.out_of_scope_path = args.out_of_scope_path
+        self.recursive_osint_count = args.recursive_osint_count
+        self.badger_location = os.Exec('pwd')
+
+        if arg.recon_ng_custom_resource_file != None:
+            if path.isfile({arg.recon_ng_custom_resource_file}):
+                assign_custom_reconng_resource_file()
+            if self.recon_ng_custom_file_checks != True:
+                # error
+            else:
+                # custom resource file accepted and will be moved to {self.project_path}/recon-ng/
+        else:
+            self.recon_ng_custom_resource_file = f"{self.badger_location}/recon-ng/recon-ng-default-resource-file.txt"
+ 
+    
+    def assign_custom_reconng_resource_file():
+            self.recon_ng_resource_file_path = arg.recon_ng_custom_resource_file 
+            self.recon_ng_custom_resource_file = True
+            self.recon_ng_custom_file_checks = check_custom_recon_ng_file() # TODO
+
+
+
 
         # if custom recon-ng resource file path path set bool and path  else default resource file 
-        check_custom_recon_ng_file()
-
-        toollist = ['amass', 'aquatone', 'domLink', 'assetfinder', 'waybackurls', 'theHarvester', 'findrelationships', 'recon-ng']
+        
 
     async def run_sequence(*functions: Awaitable[Any]) -> None:
         for function in functions:
@@ -113,9 +139,9 @@ class Target:
             for bl_url in blacklist:
                 if bl_url.Contains(tidy_url):
                     print(f"Out-of-scope url {url} found!")
-                    return true
+                    return True
         print(f"Out-of-scope url {url} not found")
-        return false
+        return False
 
     async def handle_domain_name(domain_name):
         temp_domain = trim_excess_from_domain_name(domain_name)
@@ -138,7 +164,7 @@ class Target:
     async def add_new_domain_name():
         with open(self.domain_names_file_path, "a") as f:
             f.write(domain_name)
-            self.non_uniq_domain_names += domain_name
+            self.domain_names_historic += domain_name
             print(f"Found a new domain name: {domain_name}")
 
 
@@ -146,15 +172,8 @@ class Target:
 
     # TODO consider how to consolidate
     # TODO smart recursion so that it does not retread entirely but not only endpoints
-
-
-
     # TODO refactor to one function, concat_domainnames, concat_urls!
     
-
-    
-    #def screenshotting():
-
     # OSINT
     # theHarvester
     # -s for shodan
@@ -296,7 +315,6 @@ class Target:
         print(f"Completed Aquatone flyover with {input_path}")   
 
 
-
     # cat $1 | aquatone -out $2/aquatone
 
 
@@ -417,18 +435,19 @@ def main():
                         metavar='out_of_scope_path', 
                         action='store', 
                         type=str, 
-                        required=True, 
+                        required=False, 
                         help='Provide a valid file path to .txt file contain out-of-scope urls, one per line')
     
     parser.add_argument('-r', 
                         metavar='recursive_osint_count', 
                         action='store', 
                         type=int, 
-                        required=True, 
+                        required=False, 
+                        default=3,
                         help='Provide an amount of times to recursively consildate and rerun tools on consolidated data')
      
     parser.add_argument('--recon-ng-custom', 
-                        metavar='custom_recon_ng_resource_file', 
+                        metavar='recon_ng_custom_resource_file', 
                         action='store', 
                         type=str, 
                         required=False, 
@@ -442,6 +461,12 @@ def main():
 
     args = parser.parse_args()
 
+    current_target = Target
+    # current_target setup
+
+    
+    # logging setup
+
     logging.basicConfig(level=logging.{}, filename='example.log', encoding='utf-8', level=logging.DEBUG)
     log = logging.FileHandler('{path}/{project_name}.log')
     log.setLevel('')
@@ -453,10 +478,14 @@ def main():
     logging.error('')
     logging.critical('')
 
-    current_target = Target()
+    # initial run
 
-    
-   
+    # complete first data collection and consolidation phase checks
+
+    # nth run
+
+    # complete nth data collection and consolidation phase checks
+
 
 
 if __name__ == '__main__':
