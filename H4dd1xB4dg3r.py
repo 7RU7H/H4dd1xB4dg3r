@@ -143,6 +143,9 @@ class Target:
         print(f"Out-of-scope url {url} not found")
         return False
 
+    # Faster go version in the works gurl.go
+    # fall back if required
+    # refactor to new program!
     async def handle_domain_name(domain_name):
         temp_domain = trim_excess_from_domain_name(domain_name)
         if check_uniq_domain_name(temp_domain):
@@ -167,6 +170,18 @@ class Target:
             self.domain_names_historic += domain_name
             print(f"Found a new domain name: {domain_name}")
 
+    
+    # From eadch util_concatenation function
+    # a instance of gurl will take one file of a list of filenames passed into the util function and perform 
+    # faster than grep greppage of urls and then formats and appends them if fileexists or create the file if it does not
+    # It takes -u {urltype} for formating to, -i {input_file} -o {output_file} {-a}
+    async def gurl_url_list_concatenation(url_format_type, input_path, output_path, append_flag):
+        print(f"Beginning gurl_url_list_concatenation {} with formatting options {url_format_type}")
+        if append_flag != None:
+            print(f"Handling cli gurl.go with append flag, appending to an existing output file {output_path}")
+        process = subprocess.Popen(["gurl", "-u {url_format_type} -i {input_path} -o {output_path} {append_flag}"], stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+        process.wait()
+        print(f"The url formating and concatentation of gurl.go with {url_format_type} extracted from {input_path} can be found {output_path}")
 
 
 
@@ -229,13 +244,12 @@ class Target:
         # scrap new domains
         # newdomains -> secondary_list
         # newdomains -> big_list
-        # TODO refactor to one function!
+        # TODO refactor to one function!  
 
 
     # Reverse whois with DomLink
     # Get an API key from WHOXY.com
     # Set that API key in a file named domLink.cfg in the same directory.
-
     async def reverse_whois_DOMLink(target_list, output_path):
         print("Beginning reverseWHOIS with Domlink")
         with open(target_list , "r") as f:
