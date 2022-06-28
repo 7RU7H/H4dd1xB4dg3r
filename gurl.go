@@ -39,33 +39,23 @@ func grepFile(file string, patterns []byte) (int64 map[int]string) {
 }
 
 
-func openFile(){
-	filePtr, err := os.Open("./test/creating.txt");
-	if err != nil {
-		log.Fatal(err);
-	}
-	defer filePtr.Close(); // close the file
-	// We can read from and write to the file
-}
-
-
 func createFile(filepath string){
-	filePtr, err := os.Create("");
-	if err != nil {
-		log.Fatal(err);
-	}
-	defer filePtr.Close(); // close the file
-	// We can read from and write to the file
+        filePtr, err := os.Create("");
+        if err != nil {
+                log.Fatal(err);
+        }
+        defer filePtr.Close(); // close the file
+        // We can read from and write to the file
 }
 
 
-func appendToFile(content string){
-	file, err := os.OpenFile("append.txt", os.O_APPEND | os.O_WRONLY, 0644);
-  	defer file.Close();
-	if err != nil {
-		log.Fatal(err);
-	}
-	file.Write([]byte(content));
+func appendToFile(content, filename string){
+        file, err := os.OpenFile(filename, os.O_APPEND | os.O_WRONLY, 0644);
+        defer file.Close();
+        if err != nil {
+                log.Fatal(err);
+        }
+        file.Write([]byte(content));
 }
 
 
@@ -83,16 +73,16 @@ func checkFileExists(path string) bool {
 }
 
 func printAndExit() {
-	usage := "\nUsage: gurl.go [options]\n-h\thelp\n-u\tEnter a Url type: \"domain\", \"subdomain\", \"url-noproto\", \"url-full\"\n\t-i\tfilepath to tool output\n-o\toutput filepath\n")
-	fmt.Printf("%s", usage)
-	flag.PrintDefaults()
+        usage := "\nUsage: gurl.go [options]\n-h\thelp\n-u\tEnter a Url type: \"domain\", \"subdomain\", \"url-noproto\", \"url-full\"\n\t-i\tfilepath to tool output\n-o\toutput filepath\n")
+        fmt.Printf("%s", usage)
+        flag.PrintDefaults()
         os.Exit(1)
 
 }
 
 
 func checkArgs() bool {
-	//put all cli checks here for less clutter
+        //put all cli checks here for less clutter
 }
 
 func main() {
@@ -100,129 +90,164 @@ func main() {
         var collectFileExists bool = false
         var toolOutputFileExists bool = false
 
-	var firstFlagArgCorrect bool= false
-	var secondFlagArgCorrect bool= false
-	var thirdFlagArgCorrect bool= false
-	var firstInputArgCorrect bool= false
-	var secondInputArgCorrect bool= false
-	var thirdFInputArgCorrect bool = false
-
-	var userArgumentsCorrect bool = false 
+        var firstFlagArgCorrect bool = false
+        var secondFlagArgCorrect bool = false
+        var thirdFlagArgCorrect bool = false
+        var firstInputArgCorrect bool = false
+        var secondInputArgCorrect bool = false
+        var thirdFInputArgCorrect bool = false
+        var userArgumentsCorrect bool = false 
 
 
         var helpFlag string
-	var urltypeFlag string
+        var urltypeFlag string
         var inputFileFlag string
         var outputFileFlag string
-        fmt.Printf("\n")
-        //CLI stuff is very minimal, need a -h for help -o output -i for input
 
+	var collectFile string
+	var outputFile string
+        
+
+	fmt.Printf("\n")
         flag.StringVar(&helpFlag, "-h", "help", "")
-	flag.StringVar(&urltypeFlag, "-u", "needsurltype", "Enter a Url type: \"domain\", \"subdomain\", \"noproto\", \"full\"")
-	flag.StringVar(&inputFileFlag, "-i", "needsinputfilepath", "")
+        flag.StringVar(&urltypeFlag, "-u", "needsurltype", "Enter a Url type: \"domain\", \"subdomain\", \"noproto\", \"full\"")
+        flag.StringVar(&inputFileFlag, "-i", "needsinputfilepath", "")
         flag.StringVar(&outputFileFlag, "-o", "needsoutputfilepath", "")
         flag.Parse()
-        args := flag.Args()
-	argsLen := len(args)
+       
+	args := flag.Args()
+        argsLen := len(args)
+
+
         if argsLen != 6 {
-		//Argument length != 6
-        	printAndExit()
-	}
+                printAndExit()
+        }
 
         switch os.Args[1] {
         case "-h":
-		printAndExit()
+                printAndExit()
         case "-u":
-		firstArgCorrect bool= true
+                firstArgCorrect bool= true
         default:
-		//Invalid positioning
+                //Invalid positioning
                printAndExit()
         }
-	switch os.Args[3] {
-	case "-i":
-		secondArgCorrect bool= true
+	
+	urlTypeValue := 0
+	
+        switch os.Args[2] {
+        case "domain":
+		urlTypeValue = 1
+        case "subdomain":
+		rlTypeValue = 2
+        case "noproto":
+		urlTypeValue = 3
+	case "full":
+        	urlTypeValue = 4
         default:
-		//Invalid positioning
+ 		//Invalid argument url type
                 printAndExit()
         }
+
+	firstInputArgCorrect = true
+
+        switch os.Args[3] {
+        case "-i":
+                secondArgCorrect bool= true
+        default:
+                //Invalid positioning
+                printAndExit()
+        }
+
         switch os.Args[5] {
         case "-o":
-		thirdArgCorrect bool= true
+                thirdArgCorrect bool= true
 
         default:
-		//Invalid positioning
+                //Invalid positioning
                printAndExit()
         }
 
-	//
-	switch  {
-        case "domain":
-
-        case "subdomain":
-
-	case "noproto":
-
-        case "full":
-	default:
-		printAndExit()
+        collectFileExists = checkFileExist(os.Args[4])
+        if collectFileExists != true {
+        //invalid input file it does not exist
+	printAndExit()
         }
+	collectFile = os.Args[4]
 
+        toolOutputFileExists = checkFileExist(os.Args[6])
+        if toolOutputFileExists != false { 
+        //invalid output file exists
+	printAndExit()
+        }
+	outputFile = os.Args[6]
 
-
-	userArgumentsCorrect = 
-	if userArgumentsCorrect != true {
-	//invalid arguments 
-	}
-
-
-	collectFileExists = checkFileExist()
-	if collectFileExists != true {
-		 
-	}
-
-	toolOutputFileExists = 
-	if toolOutputFileExists != true { 
-	//invalid input file path  provided
-	}	
-
-
-
-	greppedResultsMap := grepFile(file,//pattern) 
-	selectByUrlType( ,greppedResultsMap)
+	userArgumentsCorrect = toolOutputFileExists && collectFileExists && 
+        if userArgumentsCorrect != true {
+        //invalid arguments 
+        }
+	
+	baseUrlPattern := ""
+	
+        greppedResultsMap := grepFile(file,baseUrlPattern) 
+        mapReadyForIO := selectFormatByUrlType(urlTypeValue, greppedResultsMap)
+	createFile(outputFile)
+	formattedDataToFile(mapReadyForIO, outputFile)
 
 }
 
 
-func selectByUrlType(urlTypeSwitch int, urls map[int]string) {
-	//refactor into 
-	//http in bytes
-	//common .tld in bytes
+func selectFormatByUrlType(urlTypeSwitch int, urls map[int]string) (result map[int]string) {
+        //refactor into 
+        //http in bytes
+        //common .tld in bytes
+	switch urlTypeSwitch {
+	case 1:
+	 result	= domainFormatting(urls)
+	case 2:
+	 result	= subdomainFormating(urls)
+	case 3:
+	 result	= noprotoFormatting(urls)
+	case 4:
+	 result	= fullFormatting(urls)
+	default:
+	//invalid urlTypeValue	
+	printAndExit()
+	}
+	return result
+}
+
+//      "domain": -> regex [.tld]'/' -> '.'
+func domainFormatting(unformatted map[int]string) map[int]string  {
+	for i,url := range unformatted {
 	
-//	"domain": -> regex [.tld]'/' -> '.'
-//	"subdomain": -> regex [.tld]'/' -> '//'
-//	"noproto": delimiteer '//'
-//	"full": raw grep
+	}
+}
 
-
-//TODO refactor out
-//
-//edit map
-
-//write into file
-
-switch urlTypeSwitch
-case 0:
-case 1:
-case 2:
-case 3:
-	domainFormatting
-
-	subdomainFormating
-	noprotoFormatting
-	fullFormatting
-default:	
+//      "subdomain": -> regex [.tld]'/' -> '//'
+func subdomainFormating(unformatted map[int]string) map[int]string {
+	for i,url := range unformatted {
 	
-	
+	}
 
 }
 
+//      "noproto": delimiteer '//'
+func noprotoFormatting(unformatted map[int]string) map[int]string  {
+	for i,url := range unformatted {
+	
+	}
+}
+
+//      "full": raw grep
+func fullFormatting(unformatted map[int]string) map[int]string {
+	for i,url := range unformatted {
+	
+	}
+}
+//Probably better to .wait the file IO on open and append?
+func formattedDataToFile(formatted map[int]string, outputFile string) {
+	for _,url := range formatted {
+		appendToFile(url, outputFile)
+	}
+}
