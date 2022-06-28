@@ -93,6 +93,7 @@ func main() {
         var firstFlagArgCorrect bool = false
         var secondFlagArgCorrect bool = false
         var thirdFlagArgCorrect bool = false
+	var fourthFlagArgCorrect bool = false
         var firstInputArgCorrect bool = false
         var secondInputArgCorrect bool = false
         var thirdFInputArgCorrect bool = false
@@ -119,7 +120,7 @@ func main() {
         argsLen := len(args)
 
 
-        if argsLen != 6 {
+        if argsLen != 6 || argsLen != 7 {
                 printAndExit()
         }
 
@@ -127,7 +128,7 @@ func main() {
         case "-h":
                 printAndExit()
         case "-u":
-                firstArgCorrect bool= true
+                firstFlagArgCorrect bool= true
         default:
                 //Invalid positioning
                printAndExit()
@@ -153,7 +154,7 @@ func main() {
 
         switch os.Args[3] {
         case "-i":
-                secondArgCorrect bool= true
+                secondFlagArgCorrect bool= true
         default:
                 //Invalid positioning
                 printAndExit()
@@ -161,12 +162,15 @@ func main() {
 
         switch os.Args[5] {
         case "-o":
-                thirdArgCorrect bool= true
+                thirdFlagArgCorrect bool= true
 
         default:
                 //Invalid positioning
                printAndExit()
         }
+
+	
+
 
         collectFileExists = checkFileExist(os.Args[4])
         if collectFileExists != true {
@@ -176,22 +180,37 @@ func main() {
 	collectFile = os.Args[4]
 
         toolOutputFileExists = checkFileExist(os.Args[6])
-        if toolOutputFileExists != false { 
-        //invalid output file exists
+	//Check if append_flag and set 
+	if argsLen == 7 {
+		switch os.Args[7] {
+        		case "-a":
+                		fourthFlagArgCorrect bool= true
+        		default:
+                	//Invalid 7th argument passed
+                	printAndExit()
+		}
+
+        }
+
+	if (toolOutputFileExists != false && fourthFlagArgCorrect != true) || (toolOutputFileExists == false && fourthFlagArgCorrect == true) { 
+        //invalid output file exists, but append flag not parsed
 	printAndExit()
         }
 	outputFile = os.Args[6]
 
-	userArgumentsCorrect = toolOutputFileExists && collectFileExists && 
+	userArgumentsCorrect = collectFileExists && firstFlagArgCorrect && secondFlagArgCorrect && thirdFlagArgCorrect
         if userArgumentsCorrect != true {
-        //invalid arguments 
+		//invalid arguments
         }
+
 	
 	baseUrlPattern := ""
 	
         greppedResultsMap := grepFile(file,baseUrlPattern) 
         mapReadyForIO := selectFormatByUrlType(urlTypeValue, greppedResultsMap)
-	createFile(outputFile)
+	if fourthFlagArgCorrect != true {
+		createFile(outputFile)
+	}
 	formattedDataToFile(mapReadyForIO, outputFile)
 
 }
