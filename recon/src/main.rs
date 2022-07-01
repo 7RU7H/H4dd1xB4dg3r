@@ -20,14 +20,14 @@ struct Args {
     // Target address, with or without CIDR notation or domain name
     #[clap(short, long, default_value_t = "127.0.0.1")]
     target: String,
+    // Interface
+    interface: String,
 }
 
 #[derive(Debug)]
 struct ProjectManagement {
     project_name: String;
     project_working_directory: String;
-    target: String;
-    target_type: ;
 }
 
 impl ProjectManagement {
@@ -40,68 +40,116 @@ impl ProjectManagement {
            fs::create_dir()?;
            Ok((root_dir, tool))
         }
-        println!("The output for this project will be found at {} for the target: {}", self.project_working_directory, self.target);
+        println!("The output for this project will be find at {}", self.project_working_directory);
    }
 
-   fn set_target_type() {
-       match self.target {
-           None => None
-               //TODO check if this works and add CIDR notation and single ip variation
-           Some() => if self.target.contains(".txt") => self.target_type =
-
-       return 
-   }
+    }
 }
 
 struct TargetInfo {
+    target: String;
+    target_type: ;
+    interface: String;
+
     ip_address: String;
 // ConnectionTests 
     ping_able: bool;
     ping_ttl: u8; //grep string -> conv u8 (OS check)
     traceroute_able: bool;
     nmap_sn_up: bool;
-
-    hostname_discovered: bool;
-    hostname: String;
-
-    dns_discovered: bool;
-    dns: String;
-
-    domain_discovered bool;
-    domain_name: String;
-
-    http_discovered bool;
-    http_ports: String;
-
-    https_discovered bool;
-    https_ports: String;
-
-    unknown_ports: Vec;
+    
 
 }
 
 impl TargetInfo {
+//Configure based on user input
+   fn set_target_type() {
+       match self.target {
+           None => None
+               //TODO check if this works and add CIDR notation and single ip variation
+           Some() => if self.target.contains(".txt") => self.target_type = // "file"
+
+       return 
+        }
+    }
+    
+    fn check_interface_flag() {
+        match self.interface {
+            None => self.
+        }
+    }
+
+    fn set_interface_flag() {
+
+
 //ConnectionTestFNs
     fn is_pingable
     fn grep_ttl
+    fn set_nmap_pn
     fn is_traceroutable
     fn is_nmap_ns
-//hostnameFNs
-    fn found_hostname
-    fn grep_hostname
-//ServicesFNs
-    fn found_cms
-    fn found_ftp
-    fn found_domainname
-    fn grep_domainname
-    fn found_dns
-    fn found_http
-    fn found_https
-    fn found_multiport_web
-    fn found_smb
-    fn found_smtp
-    fn found_snmp
-    fn unknown_ports
+
+//Parse a .gnmap file using asnyc grep_* all the information with my super fast go-grep tool
+    fn analyse_nmap_output() {
+        let found_hostname = find_hostname().await;
+        let found_ssh = find_ssh().await;
+        let found_ftp = find_ftp().await;
+        let found_cms = find_cms().await;
+        let found_domainname = find_domainname().await;
+        let found_dns = find_dns().await;
+        let found_http = find_http().await;
+        let found_https = find_https().await;
+        let found_smb = find_smb().await;
+        let found_ldap = find_ldap().await;
+        let found_smtp = find_smtp().await;
+        let found_snmp = find_snmp().await;
+        let found_unknown_ports = find_unknown_ports().await:
+        futures::join!(found_hostname,found_ssh,found_ftp,found_cms,found_domainname,found_dns,found_http,found_https,found_smb,found_ldap,found_smtp,found_snmp,found_unknown_ports);
+
+        self.hostname = found_hostname
+        self.ssh = found_ssh
+        self.ftp = found_ftp
+        self.dns = found_dns
+        self.domain_name = found_domainname
+        self.http_ports = found_http
+        self.https_ports = found_https
+        self.cms_discovered = found_cms
+        self.smtp = found_smtp
+        self.snmp = found_snmp
+        self.smb = found_smb
+        self.ldap = found_ldap
+        self.unknown_ports = found_unknown_ports
+
+
+
+    }
+
+    async fn find_hostname() -> Result<String> {
+    }
+    async fn find_ssh() -> Result<Vec> {
+    }
+    async fn find_cms() -> Result<Vec> {
+    }
+    async fn find_ftp() -> Result<Vec> {
+    }
+    async fn find_domainname() -> Result<Vec> {
+    }
+    async fn find_dns() -> Result<Vec> {
+    }
+    async fn find_http() -> Result<Vec> {
+    }
+    async fn find_https() -> Result<Vec> {
+    }
+    async fn find_smb() -> Result<Vec> {
+    }
+    async fn find_smtp() -> Result<Vec> {
+    }
+    async fn find_snmp() -> Result<Vec> {
+    }
+    async fn find_ldap() -> Result<Vec> {
+    }
+    async fn find_unknown_ports() -> Result<Vec> {
+    }
 
 }
 
@@ -199,12 +247,17 @@ fn main() -> Result<()> {
                  .takes_value(true)
                  .index(2)
                  .help("Provide a path to the working directory where data is to stored and used"))
-        .get_matches();
         .arg(Arg::with_name("TARGET")
                  .required(true)
                  .takes_value(true)
                  .index(3)
                  .help("IP address, range or domain name"))
+        .arg(Arg::with_name("INTERFACE")
+                 .short("e")
+                 .required(false)
+                 .takes_value(true)
+                 .index(4)
+                 .help("Enter a interface for all tools"))
         .get_matches();
 
     
@@ -237,21 +290,22 @@ fn main() -> Result<()> {
     let port_scan = port_scanning();
 
     collect_service_data();
+    amap_unknown_ports().await; //pass unknown_ports_vec
     run_secondary_nmap().await;
 
     service_analysis();
-    if webservice_found {
+    if webservice_find {
         construct_urls()
         recon_webservices()
         if  {
-            // cms_found {
+            // cms_find {
             //target.cms_identified -> tool_name
             //cms related scan
             }
         }
         recon_vhost() //consider await !!
     }
-    if smbservice_found {
+    if smbservice_find {
         recon_smb()
     }
 
@@ -327,7 +381,7 @@ async fn web_content_discovery_feroxbuster() -> Result<TYPE> {
     let feroxbuster_common = run_tool().await;
     let feroxbuster_directory_medium = run_tool().await;
     futures::join!(feroxbuster_big, feroxbuster_common, feroxbuster_directory_medium);
-    let url_listing = sort_found_urls();
+    let url_listing = sort_find_urls();
 }
 
 async fn cms_switch_wpscan() -> Result<TYPE> {
