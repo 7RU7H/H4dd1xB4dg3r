@@ -51,12 +51,14 @@ struct TargetInfo {
     target_type: ;
     interface: String;
 
-    ip_address: String;
-// ConnectionTests 
+    ip_address: String; //root address for subnet and ip range syntax
+    
+    subnet_up: Vec;
+    // ConnectionTests 
     ping_able: bool;
     ping_ttl: u8; //grep string -> conv u8 (OS check)
     traceroute_able: bool;
-    nmap_sn_up: bool;
+    nmap_sn_up: bool; //Used for single machines testing convert to vec of bool
     
 
 }
@@ -87,10 +89,16 @@ impl TargetInfo {
     fn grep_ttl
     fn set_nmap_pn
     fn is_traceroutable
-    fn is_nmap_ns
+    fn is_nmap_sn
+
+    async fn find_subnet_machines_up() -> Result<Vec> {
+
+    }
+
+
 
 //Parse a .gnmap file using asnyc grep_* all the information with my super fast go-grep tool
-    fn analyse_nmap_output() {
+    fn analyse_nmap_extensive_output() {
         let found_hostname = find_hostname().await;
         let found_ssh = find_ssh().await;
         let found_ftp = find_ftp().await;
@@ -123,6 +131,7 @@ impl TargetInfo {
 
 
     }
+    
 
     async fn find_hostname() -> Result<String> {
     }
@@ -152,6 +161,8 @@ impl TargetInfo {
     }
 
 }
+
+
 
 
 // cms_discovered
@@ -408,7 +419,6 @@ async fn cms_switch_wpscan() -> Result<TYPE> {
 //struct to store extracted data
 
 //methods?
-
 
 
 
