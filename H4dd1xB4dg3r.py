@@ -29,12 +29,17 @@ class Target:
         self.organisation_root = args.organisation
         self.domain_root = args.domain_name
         self.toollist = ['amass', 'aquatone', 'domLink', 'assetfinder', 'waybackurls', 'theHarvester', 'findrelationships', 'recon-ng']
+        self.recon_ng_custom_resource_file_exists = False
+        self.recon_ng_custom_file_checks = False
+
         if path.exists({args.project_path}):
             self.project_name_file_path = args.project_path
         else:
-            # error
-        if path.exists({args.project_name}):
-            # error
+            print(f"Error Invalid project path: {args.project_path}")
+            exit(1)
+        if path.exists({args.project_name}): 
+            print(f"Error project name already exists: {args.project_name}")
+            exit(1)
         else:
             self.project_name = args.project_name
 
@@ -42,28 +47,34 @@ class Target:
         self.out_of_scope_path = args.out_of_scope_path
         self.recursive_osint_count = args.recursive_osint_count
         self.badger_location = os.Exec('pwd')
-
+        
         if arg.recon_ng_custom_resource_file != None:
             if path.isfile({arg.recon_ng_custom_resource_file}):
                 assign_custom_reconng_resource_file()
             if self.recon_ng_custom_file_checks != True:
-                # error
+                print(f"Error Invalid recon_ng custom resource file: {arg.recon_ng_custom_resource_file}")
+                exit(1)
             else:
-                # custom resource file accepted and will be moved to {self.project_path}/recon-ng/
+                # if custom recon-ng resource file path path set bool and path  else default resource file 
+                assign_custom_reconng_resource_file()
         else:
             self.recon_ng_custom_resource_file = f"{self.badger_location}/recon-ng/recon-ng-default-resource-file.txt"
- 
+
+        # init cli checks
+
     
+ 
+    def check_custom_recon_ng_file(filepath): #TODO
+        extension_test = False
+        if filepath.contains(".txt"):
+            extension_test = True
+
     def assign_custom_reconng_resource_file():
             self.recon_ng_resource_file_path = arg.recon_ng_custom_resource_file 
             self.recon_ng_custom_resource_file = True
             self.recon_ng_custom_file_checks = check_custom_recon_ng_file() # TODO
+            print(f"custom resource file accepted and will be moved to {self.project_path}/recon-ng/")
 
-
-
-
-        # if custom recon-ng resource file path path set bool and path  else default resource file 
-        
 
     async def run_sequence(*functions: Awaitable[Any]) -> None:
         for function in functions:
@@ -78,8 +89,6 @@ class Target:
         await run_sequence(
                 check_valid_install()
                 create_directory_forest()
-                # recon-ng
-
                 )
 
     # TODO script check and called tool checks seperate
@@ -112,6 +121,8 @@ class Target:
         for tool in self.toollist:
             tool_path = f"{path}/{project_name}/{tool}"
             os.mkdir(tool_path)
+        if recon_ng_custom_resource_file_exists && recon_ng_custom_resource_file_exists:
+            os.rename("{self.recon_ng_resource_file_path}", "{self.badger_location}/recon-ng/recon-ng-default-resource-file.txt") 
         print(f"Directory forest completed a {path}")
 
     # TODO
@@ -171,7 +182,7 @@ class Target:
             print(f"Found a new domain name: {domain_name}")
 
     
-    # From eadch util_concatenation function
+    # From each util_concatenation function
     # a instance of gurl will take one file of a list of filenames passed into the util function and perform 
     # faster than grep greppage of urls and then formats and appends them if fileexists or create the file if it does not
     # It takes -u {urltype} for formating to, -i {input_file} -o {output_file} {-a}
