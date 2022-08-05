@@ -1,6 +1,8 @@
 #!/usr/bin/python
 import multiprocessing as mp
-import threading, os, sys, time, dataclasses, subprocess, logging, argparse, re
+import threading, os, sys, time, subprocess, logging, argparse, re
+from  typing import Any, Awaitable
+from dataclasses import  dataclass
 # import workspace_management internalise it in the class
 
 # slots break in multiple inheritance AVOID, 20% efficiency over no slot dict
@@ -87,27 +89,14 @@ class Target:
    
     async def workspace_setup(project_name):
         await run_sequence(
-                check_valid_install()
+                # check_valid_install()
                 create_directory_forest()
                 )
 
     # TODO script check and called tool checks seperate
     # Script check and 
-    async def check_valid_install():
-        install_check_theHarvester = subprocess.Popen(["theHarvester", "-h"], stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
-        process.wait()
-        install_check_theHarvester = subprocess.Popen(["recon-cli", "-h"], stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
-        process.wait()
-        install_check_amass = subprocess.Popen(["amass", "-h"], stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
-        process.wait()
-        install_check_domlink = subprocess.Popen(["python /opt/DomLink/domLink.py","-h" ], stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
-        process.wait()
-        install_check_findrelationships = subprocess.Popen(["scripts/script_findrelationships_multi.sh", ""], stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
-        process.wait()
-        install_check_assetfinder = subprocess.Popen(["assetfinder", "-h"], stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
-        process.wait()
-        install_check_waybackurl = subprocess.Popen(["scripts/script_waybackurl.sh", ""], stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
-        process.wait()
+    # async def check_valid_install():
+    # See newH4dd1x/extract-check-valid-install
 
     def create_directory_forest(project_name, path):
         os.mkdir({path}/{project_name})
@@ -121,7 +110,7 @@ class Target:
         for tool in self.toollist:
             tool_path = f"{path}/{project_name}/{tool}"
             os.mkdir(tool_path)
-        if recon_ng_custom_resource_file_exists && recon_ng_custom_resource_file_exists:
+        if recon_ng_custom_resource_file_exists and recon_ng_custom_resource_file_exists:
             os.rename("{self.recon_ng_resource_file_path}", "{self.badger_location}/recon-ng/recon-ng-default-resource-file.txt") 
         print(f"Directory forest completed a {path}")
 
@@ -187,7 +176,7 @@ class Target:
     # faster than grep greppage of urls and then formats and appends them if fileexists or create the file if it does not
     # It takes -u {urltype} for formating to, -i {input_file} -o {output_file} {-a}
     async def gurl_url_list_concatenation(url_format_type, input_path, output_path, append_flag):
-        print(f"Beginning gurl_url_list_concatenation {} with formatting options {url_format_type}")
+        print(f"Beginning gurl_url_list_concatenation {input_path} with formatting options {url_format_type}")
         if append_flag != None:
             print(f"Handling cli gurl.go with append flag, appending to an existing output file {output_path}")
         process = subprocess.Popen(["gurl", "-u {url_format_type} -i {input_path} -o {output_path} {append_flag}"], stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
@@ -216,19 +205,19 @@ class Target:
         print(f"Recon-NG OSINT against {target} check {output_path}")
 
     # Acquistion Recon 
-    async def acquistion_recon_wordlist_generation():
+    #async def acquisition_recon_wordlist_generation():
         #scrap crunchbase, wiki, google
         # GO GO GO
 
-    async def acquisition_recon_Amass_ORG(Target.organisation_root, output_path, log_path):
+    async def acquisition_recon_Amass_ORG(output_path, log_path):
         print("Beginning Amass intel -org")
-        process = subprocess.Popen(["amass", "intel -src -org {Target.organisation_root} -max-dns-queries 2500 -oA {output_path} -l {log_path}"], stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+        process = subprocess.Popen(["amass", "intel -src -org {self.organisation_root} -max-dns-queries 2500 -oA {output_path} -l {log_path}"], stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
         process.wait()
         print("Amass intel -src -org complete")
 
-    async def acquisition_recon_Amass_CIDR(Target.cidr_range, output_path, log_path):
+    async def acquisition_recon_Amass_CIDR(output_path, log_path):
         print("Beginning Amass intel -src -cidr {}")
-        process = subprocess.Popen(["amass", "intel -src -cidr {Target.cidr_range} -max-dns-queries 2500 -oA {output_path} -l {log_path}"], stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+        process = subprocess.Popen(["amass", "intel -src -cidr {self.cidr_range} -max-dns-queries 2500 -oA {output_path} -l {log_path}"], stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
         process.wait()
         print("Amass intel -src -cidr complete")
 
@@ -241,17 +230,17 @@ class Target:
         print("Dictionary containing ASN numbers constructed")
 
     # ANS enumeration
-    async def ans_enumeration_Amass(self.asnum, output_path, log_path):
+    async def ans_enumeration_Amass(output_path, log_path):
         print("Beginning Amass ANS enumeration")
-        for ans in self.asnum:
-            print("Beginning Amass intel -ans {ans} -oA {output_path} -l {log_path}")
-            process = subprocess.Popen(["amass", "intel -asn {asn} -max-dns-queries 2500 -oA {output_path} -l {log_path}"], stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+        for asn in self.asnum:
+            print("Beginning Amass intel -ans {asn} -oA {output_path} -l {log_path}")
+            process = subprocess.Popen(["amass", "intel -asn {self.asnum} -max-dns-queries 2500 -oA {output_path} -l {log_path}"], stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
             process.wait()
             print("Amass intel -asn {asn} complete")
-        print(f"Ans recon for {self.asnum} completed")
+        print(f"Ans recon for asnum dictionary completed")
 
     # ANS enumeration Utility
-    async def ansEnum_Util_concatenate_domain_names():
+    #async def ansEnum_Util_concatenate_domain_names():
         # scrap new domains
         # newdomains -> secondary_list
         # newdomains -> big_list
@@ -273,7 +262,7 @@ class Target:
         print(f"ReverseWHOIS Recon with DomLink completed")
 
     # Reverse whois Utility
-    async def revWhois_Util_concatenate_domain_names():
+    #async def revWhois_Util_concatenate_domain_names():
             # scrap new domains
             # newdomains -> secondary_list
             # newdomains -> big_list
@@ -288,12 +277,12 @@ class Target:
     # cat $3 | python3 $2/scripts/findrelationships.py 0> $1/findrelationships/findrelationships_output.txt"
     async def analyse_relationships_findrelationships(project_name, badger_location, target_list):
         print("Findrealtionships.py Started")
-            with open(target_list , "r") as f:
-                targets = f.read()
-                for target in targets:
-                    process = subprocess.Popen(["scripts/script_findrelationships_multi.sh", "{path}/{project_name} {badger_location} {target}"], stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
-                    process.wait()
-                    print(f"Findrelationships.py completed analysis of {target}")
+        with open(target_list , "r") as f:
+            targets = f.read()
+            for target in targets:
+                process = subprocess.Popen(["scripts/script_findrelationships_multi.sh", "{path}/{project_name} {badger_location} {target}"], stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+                process.wait()
+                print(f"Findrelationships.py completed analysis of {target}")
         print("Findrelationships.py completed")
 
 
@@ -326,7 +315,7 @@ class Target:
     #    cat $1 | waybackurls >> $2/waybackurl_out.txt
 
     # Domain Enumeration Utility
-    async def domEnum_Util_concatenate_urls():   
+    # async def domEnum_Util_concatenate_urls():   
             # scrap new domains
             # newdomains -> secondary_list
             # newdomains -> big_list
@@ -348,41 +337,40 @@ class Target:
         await run_sequence(
                 #scope_init_bbscope()
                     await run_parallelism(
-                        osint_theHarvester()
-                        osint_recon_ng()
+                        osint_theHarvester(),
+                        osint_recon_ng(),
                         # scrapping acquisition recon function(S?)
                         # metabigor!!
                         await run_sequence(
-                            acquisition_recon_Amass_ORG()
-                            acquisition_recon_Amass_CIDR()
+                            acquisition_recon_Amass_ORG(),
+                            acquisition_recon_Amass_CIDR(),
                             await run_parallelism(
-                                acqRec_Util_amass_find_ans()
-                                acqRec_Util_concatenate_domain_names()
-                             )
+                                acqRec_Util_amass_find_ans(),
+                                acqRec_Util_concatenate_domain_names(),
+                             ),
                             await run_parallelism(
                                 await run_sequence(
-                                    ans_enumeration_Amass()
-                                    ansEnum_Util_concatenate_domain_names()
-                                    )
+                                    ans_enumeration_Amass(),
+                                    ansEnum_Util_concatenate_domain_names(),
+                                    ),
                                 await run_sequence(
-                                    reverse_whois_DOMLink()
-                                    revWhois_Util_concatenate_domain_names()
-                                    )
-                            )      
+                                    reverse_whois_DOMLink(),
+                                    revWhois_Util_concatenate_domain_names(),
+                                    ),
+                            ),      
                             await run_sequence(
-                                analyse_relationships_findrelationships()
+                                analyse_relationships_findrelationships(),
                                 await run_parallelism(
-                                    domain_enumeration_Waybackurls()
-                                    domain_enumeration_Assetfinder()
-                                    )
-                                domEnum_Util_concatenate_urls()
+                                    domain_enumeration_Waybackurls(),
+                                    domain_enumeration_Assetfinder(),
+                                    ),
+                                domEnum_Util_concatenate_urls(),
                                 #await run_parallelism(
-                                aquatone_flyover()
+                                aquatone_flyover(),
                                 # May wait paralell urls.txt, vulnerable.txt  and domains.txt
-                                #    )
-                                )
-                            )
-                        )
+                                ),
+                            ),
+                        ),
                     )
 
 
@@ -419,14 +407,14 @@ def main():
     print("               ::               :::: ::   ::::::")
     print("")
     print("=======================================================================")
-    print("OSINT Reconnaissance suite for Redteaming, Bug Bounties, etc"
+    print("      OSINT Reconnaissance suite for Redteaming, Bug Bounties, etc     ")
     print("=======================================================================")
 
-    parser = argparse.ArgumentParser(prog='H4dd1xB4dg3r', 
-                                    usage'%(prog)s [options] target', 
-                                    add_help=True, 
+    parser = argparse.ArgumentParser(#prog='H4dd1xB4dg3r', 
+                                    usage='%(prog)s [options] target', 
                                     description='Automated Bug Bounty OSINT an organisation',
-                                    epilog='Happy Hacking :)')
+                                    epilog='Happy Hacking :)',
+                                    add_help=True,)
 
     parser.add_argument('target_organisation',
                         metavar='organisation', 
@@ -491,10 +479,10 @@ def main():
 
     
     # logging setup
-
-    logging.basicConfig(level=logging.{}, filename='example.log', encoding='utf-8', level=logging.DEBUG)
+    # 
+    logging.basicConfig(filename='{Target.project_name}.log', encoding='utf-8', level=logging.DEBUG)
     log = logging.FileHandler('{path}/{project_name}.log')
-    log.setLevel('')
+    log.setLevel(logging.DEBUG)
     formatter = logging.Formatter('%(asctime)s  %(levelname)s %(tool)s %(message)s')
     log.setFormatter(formatter)
     logging.debug('')

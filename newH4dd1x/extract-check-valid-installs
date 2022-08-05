@@ -1,0 +1,16 @@
+async def check_valid_install():
+        install_check_theHarvester = subprocess.Popen(["theHarvester", "-h"], stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+        process.wait()
+        install_check_theHarvester = subprocess.Popen(["recon-cli", "-h"], stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+        process.wait()
+        install_check_amass = subprocess.Popen(["amass", "-h"], stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+        process.wait()
+        install_check_domlink = subprocess.Popen(["python /opt/DomLink/domLink.py","-h" ], stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+        process.wait()
+        install_check_findrelationships = subprocess.Popen(["scripts/script_findrelationships_multi.sh", ""], stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+        process.wait()
+        install_check_assetfinder = subprocess.Popen(["assetfinder", "-h"], stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+        process.wait()
+        install_check_waybackurl = subprocess.Popen(["scripts/script_waybackurl.sh", ""], stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+        process.wait()
+
