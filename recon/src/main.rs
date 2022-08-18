@@ -408,9 +408,6 @@ async fn cms_switch_wpscan() -> Result<TYPE> {
     let wpscan_out = run_tool().await;
 }
 
-async fn recon_vhost() -> Result<TYPE> {
-    let ffuf_out = run_tool.await;
-}
 
 
     //web related - managed parallelism based on tool

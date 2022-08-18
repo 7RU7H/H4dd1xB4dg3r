@@ -31,7 +31,15 @@ feroxbuster -u $URL -w $WORDLIST --auto-bail -o feroxbuster/$project -x # space 
 
 
 
+const gobuster_base_cmd : &str "gobuster "
+const gobuster_vhost_cmd : &str "vhost -u "
+const gobuster_vhost_wordlist_flag ; &str "-w /usr/share/seclists//usr/share/seclists/Discovery/DNS/subdomains-top1million-"
+const gobuster_subdomain_wordlist_size_5000 : &str = "5000.txt"
+const gobuster_subdomain_wordlist_size_20000 : &str = "20000.txt"
+const gobuster_subdomain_wordlist_size_110000 : &str = "110000.txt"
+
 //JS parsing
+//
 
 python3 xnLinkFinder.py -i $URL -o xnLinkFinder/$URL
 
