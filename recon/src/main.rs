@@ -241,6 +241,15 @@ let tool_output = Command::new(tool_name)
 return 
 }
 
+
+//Perform a lookup on a function name for a message prompt and prompt_type
+fn handle_prompt_request(fn_name: &str)
+
+//prompt user takes the fn_name and message_str from handle_prompt_request
+fn prompt_user(fn_name: &str, message_str &str, prompt_type) {
+}
+
+
 fn main() -> Result<()> {
     //cli stuff
     let args = Args::parse();
@@ -287,7 +296,7 @@ fn main() -> Result<()> {
         target_type = 0;
     };
 
-    current_porject.target_type = current_project.set_target_type();
+    current_project.target_type = current_project.set_target_type();
     current_project.create_directory_tree();
 
 
@@ -397,6 +406,10 @@ async fn web_content_discovery_feroxbuster() -> Result<TYPE> {
 
 async fn cms_switch_wpscan() -> Result<TYPE> {
     let wpscan_out = run_tool().await;
+}
+
+async fn recon_vhost() -> Result<TYPE> {
+    let ffuf_out = run_tool.await;
 }
 
 
