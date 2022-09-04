@@ -34,12 +34,12 @@ class Target:
         self.recon_ng_custom_resource_file_exists = False
         self.recon_ng_custom_file_checks = False
 
-        if path.exists({args.project_path}):
+        if os.path.exists({args.project_path}):
             self.project_name_file_path = args.project_path
         else:
             print(f"Error Invalid project path: {args.project_path}")
             exit(1)
-        if path.exists({args.project_name}): 
+        if os.path.exists({args.project_name}): 
             print(f"Error project name already exists: {args.project_name}")
             exit(1)
         else:
