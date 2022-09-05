@@ -1,6 +1,22 @@
 #!/usr/share/python3
 import os, sys, time, subprocess, logging, argparse, re
 from  typing import Any, Awaitable
+from dataclasses import  dataclass
+# import workspace_management internalise it in the class
+
+# slots break in multiple inheritance AVOID, 20% efficiency over no slot dict
+@dataclass(slots=True)
+class Target:
+    host_ip: str
+    domain_name: str
+    subdomain_list: list
+    protocol_port_dict: dict
+
+    def __init__(self):
+        self.host_ip = args.host
+
+
+
 
 async def run_sequence(*functions: Awaitable[Any]) -> None:
     for function in functions:
@@ -62,10 +78,60 @@ async def bulk_nikto(targets_list):
 # -s subdomain
 # -h host
 # -o directory name
-
+# -ssl enable https ssl flags
 
 def main():
     
+    parser = argparse.ArgumentParser(#prog='WebAppRecon.py',
+                                    usage='%(prog)s [options]',
+                                    description='Automated Web Application Recon',
+                                    epilog='Happy Hacking :)',
+                                    add_help=True,)
+
+    parser.add_argument('-d',
+                        metavar='domain',
+                        action='store',
+                        type=str,
+                        required=False,
+                        help='Provide domain name')
+    
+    parser.add_argument('-h',
+                        metavar='host',
+                        action='store',
+                        type=str,
+                        required=True,
+                        help='Provide host IP')
+
+    parser.add_argument('-o',
+                        metavar='output_path',
+                        action='store',
+                        type=str,
+                        required=True,
+                        help='Provide output directory to create directories for each tool\'s output')
+
+    parser.add_argument('-p',
+                        metavar='ports_user_string',
+                        action='store',
+                        type=str,
+                        required=False,
+                        help='Provide a list of ports demlimitered with commas')
+
+    parser.add_argument('-s',
+                        metavar='subdomain_list',
+                        action='store',
+                        type=str,
+                        required=False,
+                        help='Provide subdomain domain names, if lists ns0, ns1 this script will concatenate full urls - for effiency do not provide dots, but will remove dots just incase')
+
+    parser.add_argument('-ssl',
+                        metavar='enable_ssl',
+                        action='store',
+                        type=bool,
+                        required=False,
+                        help='Enable ssl')
+    
+    args = parser.parse_args()    
+
     run_sequence(
             create_directories()
             targets_list = create_urls()
@@ -78,3 +144,8 @@ def main():
             
             )
     os.exit(0)
+
+
+
+if __name__ == '__main__':
+    main()
