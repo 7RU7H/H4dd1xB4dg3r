@@ -73,6 +73,20 @@ async def bulk_nikto(targets_list):
 
 # feroxbuster
 
+# skipfish
+# review https://www.kali.org/tools/skipfish/
+async def web_security_scanning_Skipfish(target):
+    print(f"Starting Skipfish scanning on {target}")
+    process = subprocess.Popen(["skipfish", "-u {target}"], stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+    process.wait()
+    print(f"Finished Skipfish scanning on {target}") 
+
+async def bulk_skipfish(targets_list):
+    for target in targets_list:
+        web_security_scanning_Skipfish(target)
+
+
+
 
 # -d domain 
 # -s subdomain
@@ -136,6 +150,7 @@ def main():
             create_directories()
             targets_list = create_urls()
             bulk_gospider(targets_list)
+            bulk_skipfish(target_list)
             run_parallelism(
                 bulk_nuclei(targets_list)
                 bulk_nikto(targets_list)
