@@ -41,6 +41,10 @@ async def bulk_gospider(targets_list):
     for target in targets_list:
         spider_target_Gospider(target)
 
+
+# webananalyze
+webanalyze -crawl 5 -redirect -host {target} | tee -a webanalyze-http
+
         
 # Handle urls into a map
 

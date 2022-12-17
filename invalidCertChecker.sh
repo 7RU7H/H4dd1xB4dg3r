@@ -4,10 +4,15 @@
 
 # https://klichx.dev/2019/11/09/f-strings-and-python-logging/
 
-#!/bin/bash
-TARGET="mysite.example.net"; 
-RECIPIENT="hostmaster@mysite.example.net";
-DAYS=7;
+if [ "$#" -ne 2 ]; then
+		echo "Usage: $0 <https://domain.com> <integer for days expires in less than>"
+			exit
+fi
+
+TARGET=$1; 
+DOMAIN=$(echo $1 |  awk -F'//' '{print $2}')
+RECIPIENT="hostmaster@$DOMAIN";
+DAYS=$2;
 echo "checking if $TARGET expires in less than $DAYS days";
 expirationdate=$(date -d "$(: | openssl s_client -connect $TARGET:443 -servername $TARGET 2>/dev/null \
                               | openssl x509 -text \
