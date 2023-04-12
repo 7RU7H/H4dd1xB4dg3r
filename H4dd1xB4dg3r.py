@@ -17,7 +17,7 @@ class Target:
     subdomains_historic_file_path: str
     ansnum: dict 
     out_of_scope_path: str
-    project_name_file_path: str
+    full_path_to_project_dir: str
     project_name: str
     badger_location: str
     toollist: list
@@ -25,6 +25,7 @@ class Target:
     recon_ng_custom_resource_file_exists: bool
     recon_ng_custom_file_checks: bool
     recon_ng_resource_file_path: str
+    project_default_parent_path: str
 
 
     def __init__(self):
@@ -33,22 +34,30 @@ class Target:
         self.toollist = ['amass', 'aquatone', 'domLink', 'assetfinder', 'waybackurls', 'theHarvester', 'findrelationships', 'recon-ng']
         self.recon_ng_custom_resource_file_exists = False
         self.recon_ng_custom_file_checks = False
-
-        if os.path.exists({args.project_path}):
-            self.project_name_file_path = args.project_path
+        self.project_default_parent_path = '/tmp'
+        
+        if arg.project_path != '':
+            self.full_path_to_project_dir = f"{args.project_path}/"
         else:
+            self.full_path_to_project_dir = f"{self.project_default_parent_path}"
+        
+        if os.path.exists(self.full_path_to_project_dir):
             print(f"Error Invalid project path: {args.project_path}")
             exit(1)
-        if os.path.exists({args.project_name}): 
-            print(f"Error project name already exists: {args.project_name}")
+        else:
+            self.full_path_to_project_dir += f"{self.project_name}"
+
+        if os.path.exists(): 
+            print(f"Error project name already exists: {self.project_default_parent_path}{args.project_name}")
             exit(1)
         else:
-            self.project_name = args.project_name
+            os.mkdir(self.full_path_to_project_dir)
+            print(f"Project directory successfully made at: {self.full_path_to_project_dir}")
 
         self.domain_names_list += args.domain_name
         self.out_of_scope_path = args.out_of_scope_path
         self.recursive_osint_count = args.recursive_osint_count
-        self.badger_location = os.Exec('pwd')
+        self.badger_location = os.exec('pwd')
         
         if arg.recon_ng_custom_resource_file != None:
             if path.isfile({arg.recon_ng_custom_resource_file}):
@@ -57,14 +66,47 @@ class Target:
                 print(f"Error Invalid recon_ng custom resource file: {arg.recon_ng_custom_resource_file}")
                 exit(1)
             else:
-                # if custom recon-ng resource file path path set bool and path  else default resource file 
+                # if custom recon-ng resource file path path set bool and path else default resource file 
                 assign_custom_reconng_resource_file()
         else:
             self.recon_ng_custom_resource_file = f"{self.badger_location}/recon-ng/recon-ng-default-resource-file.txt"
 
-        # init cli checks
+        # init tool checks
 
+        create_directory_forest(self.full_path_to_project_dir)
+        
     
+    # TODO script check and called tool checks seperate
+    # Script check and 
+    # async def check_valid_install():
+    # See newH4dd1x/extract-check-valid-install
+
+    def create_directory_forest(path):
+        os.mkdir({path}/log)
+        os.mkdir({path}/reports)
+        os.mkdir({path}/domainmap)
+        os.mkdir({path}/wordlists)
+        os.mkdir({path}/wordlists/scrappings)
+        os.mkdir({path}/wordlists/custom)
+        os.mkdir({path}/wordlists/utility)
+        for tool in self.toollist:
+            tool_path = f"{path}/{tool}"
+            os.mkdir(tool_path)
+        if recon_ng_custom_resource_file_exists and recon_ng_custom_resource_file_exists:
+            os.rename("{self.recon_ng_resource_file_path}", "{self.badger_location}/recon-ng/recon-ng-default-resource-file.txt") 
+        print(f"Directory forest completed a {path}")
+
+    # TODO
+    # Needs STRUCTURING by domain hierarchy!!
+    def create_directory_tree_by_address(address, path):
+        if address.Contains(".txt"):
+            f = open(target_list , "r")
+            address_list = f.read()
+            for addr in address_list:
+                os.mkdir({path}/domainmap/{addr}/wordlists)
+        else:
+            os.mkdir({path}/domainmap/{address}/wordlists)
+        print(f"Directory structure added to {path}/domainmap")
  
     def check_custom_recon_ng_file(filepath): #TODO
         extension_test = False
@@ -92,40 +134,6 @@ class Target:
                 # check_valid_install()
                 create_directory_forest()
                 )
-
-    # TODO script check and called tool checks seperate
-    # Script check and 
-    # async def check_valid_install():
-    # See newH4dd1x/extract-check-valid-install
-
-    def create_directory_forest(project_name, path):
-        os.mkdir({path}/{project_name})
-        os.mkdir({path}/{project_name}/log)
-        os.mkdir({path}/{project_name}/reports)
-        os.mkdir({path}/{project_name}/domainmap)
-        os.mkdir({path}/{project_name}/wordlists)
-        os.mkdir({path}/{project_name}/wordlists/scrappings)
-        os.mkdir({path}/{project_name}/wordlists/custom)
-        os.mkdir({path}/{project_name}/wordlists/utility)
-        for tool in self.toollist:
-            tool_path = f"{path}/{project_name}/{tool}"
-            os.mkdir(tool_path)
-        if recon_ng_custom_resource_file_exists and recon_ng_custom_resource_file_exists:
-            os.rename("{self.recon_ng_resource_file_path}", "{self.badger_location}/recon-ng/recon-ng-default-resource-file.txt") 
-        print(f"Directory forest completed a {path}")
-
-    # TODO
-    # Needs STRUCTURING by domain hierarchy!!
-    def create_directory_tree_by_address(address, project_name):
-        if address.Contains(".txt"):
-            f = open(target_list , "r")
-            address_list = f.read()
-            for addr in address_list:
-                os.mkdir({path}/{project_name}/domainmap/{addr}/wordlists)
-        else:
-            os.mkdir({path}/{project_name}/domainmap/{address}/wordlists)
-        print(f"Directory structure added to {path}/{project_name}/domainmap")
-
          
     async def check_out_of_scope(url):
         print(f"Checking if {url} is out-of-scope")
@@ -182,7 +190,6 @@ class Target:
         process = subprocess.Popen(["gurl", "-u {url_format_type} -i {input_path} -o {output_path} {append_flag}"], stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
         process.wait()
         print(f"The url formating and concatentation of gurl.go with {url_format_type} extracted from {input_path} can be found {output_path}")
-
 
 
     # TODO consider how to consolidate
@@ -441,7 +448,7 @@ def main():
                         metavar='project_path', 
                         action='store', 
                         type=str, 
-                        required=True, 
+                        required=False, 
                         help='Provide a valid file path to store project')
     
     parser.add_argument('-s', 
