@@ -28,7 +28,7 @@ class Target:
     project_default_parent_path: str
 
 
-    def __init__(self):
+    def __init__(self, args):
         self.organisation_root = args.organisation
         self.domain_root = args.domain_name
         self.toollist = ['amass', 'aquatone', 'domLink', 'assetfinder', 'waybackurls', 'theHarvester', 'findrelationships', 'recon-ng']
@@ -56,7 +56,7 @@ class Target:
 
         self.domain_names_list += args.domain_name
         self.out_of_scope_path = args.out_of_scope_path
-        self.recursive_osint_count = args.recursive_osint_count
+        self.recursion_count = args.recursive_osint_count
         self.badger_location = os.exec('pwd')
         
         if arg.recon_ng_custom_resource_file != None:
@@ -409,7 +409,7 @@ def main():
     print("  !!    m@m@*   @@   *!@    @!  @!           **@@m   @!")
     print("  !:    *!  !!* @!   !!!    !!  *!!!!!*        !@!   !!")
     print("  !:    !!!!*   !!   *:!    !:  !:           **!!!   !:")
-    print(": !: : : :: : : : :   : : : ! :  : :!: :        :  : :::")
+    print(": !: : : :: : : ::   : : : ! :  : :!: :        :  : :::")
     print("               ::               ::     :::::  :::")
     print("               ::               :::: ::   ::::::")
     print("")
@@ -427,61 +427,57 @@ def main():
                         metavar='organisation', 
                         action='store', 
                         type=str, 
-                        required=True, 
                         help='Provide a target organisation to OSINT')
     
     parser.add_argument('-d', 
                         metavar='domain_name', 
                         action='store', 
                         type=str, 
-                        required=True, 
                         help='Provide a domain name used as intial passive recon target')
 
     parser.add_argument('-n', 
                         metavar='project_name', 
                         action='store', 
                         type=str, 
-                        required=True, 
                         help='Provide a project name used a root directory of the directory tree')
 
     parser.add_argument('-p', 
                         metavar='project_path', 
                         action='store', 
                         type=str, 
-                        required=False, 
                         help='Provide a valid file path to store project')
     
     parser.add_argument('-s', 
                         metavar='out_of_scope_path', 
                         action='store', 
                         type=str, 
-                        required=False, 
                         help='Provide a valid file path to .txt file contain out-of-scope urls, one per line')
     
     parser.add_argument('-r', 
-                        metavar='recursive_osint_count', 
+                        metavar='recursion_count', 
                         action='store', 
                         type=int, 
-                        required=False, 
                         default=3,
                         help='Provide an amount of times to recursively consildate and rerun tools on consolidated data')
      
-    parser.add_argument('--recon-ng-custom', 
+    parser.add_argument('-c', 
                         metavar='recon_ng_custom_resource_file', 
                         action='store', 
-                        type=str, 
                         required=False, 
                         help='Provide a custom recon-ng resource file, see default {badger_location} ')
 
 
     
 
-
+    if len(sys.argv) ==	 1:
+        parser.print_help()
+        sys.exit(1)
 
 
     args = parser.parse_args()
+    args_dict = vars(args)
 
-    current_target = Target
+    current_target = Target(**args_dict)
     # current_target setup
 
     
