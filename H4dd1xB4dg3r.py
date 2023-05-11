@@ -26,7 +26,7 @@ class Target:
     recon_ng_custom_file_checks: bool
     recon_ng_resource_file_path: str
     project_default_parent_path: str
-
+    max_recursion_count: int
 
     def __init__(self, args):
         self.organisation_root = args.organisation
@@ -70,7 +70,11 @@ class Target:
                 assign_custom_reconng_resource_file()
         else:
             self.recon_ng_custom_resource_file = f"{self.badger_location}/recon-ng/recon-ng-default-resource-file.txt"
-
+        
+        if args.recursion_count != '':
+            self.max_recursion_count = 0
+        else:
+            self.max_recursion_count = args.resource_count
         # init tool checks
 
         create_directory_forest(self.full_path_to_project_dir)
@@ -92,6 +96,9 @@ class Target:
         for tool in self.toollist:
             tool_path = f"{path}/{tool}"
             os.mkdir(tool_path)
+            for count in self.max_recursion_count:
+                count_dir = f"{tool_path}/pass-{str(count)}"
+                os.mkdir(count_dir)
         if recon_ng_custom_resource_file_exists and recon_ng_custom_resource_file_exists:
             os.rename("{self.recon_ng_resource_file_path}", "{self.badger_location}/recon-ng/recon-ng-default-resource-file.txt") 
         print(f"Directory forest completed a {path}")
@@ -194,6 +201,7 @@ class Target:
 
     # TODO consider how to consolidate
     # TODO smart recursion so that it does not retread entirely but not only endpoints
+    
     # TODO refactor to one function, concat_domainnames, concat_urls!
     
     # OSINT
