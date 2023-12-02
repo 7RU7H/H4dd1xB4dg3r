@@ -1,8 +1,8 @@
 #!/usr/bin/python
 import multiprocessing as mp
-import threading, os, sys, time, subprocess, logging, argparse, re
+import threading, os, sys, time, subprocess, logging, argparse, re, asyncio, path
 from  typing import Any, Awaitable
-from dataclasses import  dataclass
+from dataclasses import dataclass
 # import workspace_management internalise it in the class
 
 # slots break in multiple inheritance AVOID, 20% efficiency over no slot dict
@@ -27,16 +27,21 @@ class Target:
     recon_ng_resource_file_path: str
     project_default_parent_path: str
     max_recursion_count: int
+    non_uniq_domain_names: List[str] 
 
     def __init__(self, args):
         self.organisation_root = args.organisation
         self.domain_root = args.domain_name
+        self.non_uniq_domain_names = []
         self.toollist = ['amass', 'aquatone', 'domLink', 'assetfinder', 'waybackurls', 'theHarvester', 'findrelationships', 'recon-ng']
         self.recon_ng_custom_resource_file_exists = False
         self.recon_ng_custom_file_checks = False
         self.project_default_parent_path = '/tmp'
-        
-        if arg.project_path != '':
+        self.asnum = {}
+        self.ansnum = [}
+
+
+        if args.project_path != '':
             self.full_path_to_project_dir = f"{args.project_path}/"
         else:
             self.full_path_to_project_dir = f"{self.project_default_parent_path}"
@@ -59,11 +64,11 @@ class Target:
         self.recursion_count = args.recursive_osint_count
         self.badger_location = os.exec('pwd')
         
-        if arg.recon_ng_custom_resource_file != None:
-            if path.isfile({arg.recon_ng_custom_resource_file}):
+        if args.recon_ng_custom_resource_file != None:
+            if path.isfile({args.recon_ng_custom_resource_file}):
                 assign_custom_reconng_resource_file()
             if self.recon_ng_custom_file_checks != True:
-                print(f"Error Invalid recon_ng custom resource file: {arg.recon_ng_custom_resource_file}")
+                print(f"Error Invalid recon_ng custom resource file: {args.recon_ng_custom_resource_file}")
                 exit(1)
             else:
                 # if custom recon-ng resource file path path set bool and path else default resource file 
@@ -121,7 +126,7 @@ class Target:
             extension_test = True
 
     def assign_custom_reconng_resource_file():
-            self.recon_ng_resource_file_path = arg.recon_ng_custom_resource_file 
+            self.recon_ng_resource_file_path = args.recon_ng_custom_resource_file 
             self.recon_ng_custom_resource_file = True
             self.recon_ng_custom_file_checks = check_custom_recon_ng_file() # TODO
             print(f"custom resource file accepted and will be moved to {self.project_path}/recon-ng/")
