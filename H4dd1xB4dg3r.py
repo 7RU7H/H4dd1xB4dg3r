@@ -260,6 +260,11 @@ class Target:
         process.wait()
         print("Amass intel -src -cidr complete")
 
+
+    # Beware as an idiot that is not a paying student of Haddix - https://www.youtube.com/watch?v=nGs8pWIj5k4 6:10 - do not automate the ASN recon
+    # Multiple companies that are named that same thing!!! 
+    # Enjoy Scope : and not NoScoping yourself! Future me
+
     # Acquistion Recon Utility
     # cat $1 awk -F, '{print $1}' ORS=',' | sed 's/,$//' | xargs -P3 -I@ -d ',' > $2
     async def acqRec_Util_amass_find_ans(intel_output_path, outpath_file):
