@@ -248,6 +248,52 @@ class Target:
         #scrap crunchbase, wiki, google
         # GO GO GO
 
+    # TODO
+    # Breakpoint -> certian scopage 
+    # Pause, modify?
+    # Pause get data by manual cmd running, check data
+
+    # TODO
+    # Beware as an idiot that is not a paying student of Haddix - https://www.youtube.com/watch?v=nGs8pWIj5k4 6:10 - do not automate the ASN recon
+    # Multiple companies that are named that same thing!!! 
+    # Enjoy Scope : and not NoScoping yourself! Future me
+
+    # Print commands
+    # curl hurricane electric's internet serivces site: bgp.hg.net
+    # provide organisation name
+
+    # echo $ASN | asnmap -slient | naabu -silent  - optional naabu hellscape nmap-cli 
+    # OR 
+    # Stealth do `smap` https://github.com/s0md3v/Smap - uses nmap syntax! does not need a shodan key, but uses shodan!
+
+
+    # Shodan recon - https://www.youtube.com/watch?v=4CL_8GRNVTE shodan-cli
+
+    # Shosbugo https://github.com/incogbyte/shosubgo - grab subdomain using shodan api   
+
+
+    # TODO
+    # Certificate DBs.. 
+    # IS is big company or is it tiny company in the cloud
+    # certificates
+    # echo | openssl s_client -servername hostname -connect $domainORIP:443 2>/dev/null | openssl x509 -outform PEM > $customCERT.crt
+    # CloudRecon https://github.com/g0ldencybersec/CloudRecon Finding assets from certificates! Scan the web
+    # Parse out subdomains:
+    # `grep -F '.$DOMAIN.$TLD' cloudrecon.txt | awk -F'[][]' '{print $2}' | sed 's# #\n#g | grep ".$DOMAIN.$TDL" | sort -fu | cut -d ',' -f1 | sort -u`
+    # Parse out all domains
+    # `grep -F '.$DOMAIN.$TLD' cloudrecon.txt | awk -F'[][]' '{print $2}' | sed 's# #\n#g | sort -fu | cut -d ',' -f1 | sort -u`
+    
+    # CloudRecon Backup - http://kaeferjaeger.gay - they scan sites every 3 weeks ~
+
+    # CONSIDER THE DOMAINS, before proceeding 
+
+    # TODO
+    # Certs
+    # prips -- print the IP addresses in a given range - debian/ubuntu apt
+    # https://github.com/hakluke/hakip2host    
+    # `prips IP/CIDR | hakip2host`
+
+
     async def acquisition_recon_Amass_ORG(output_path, log_path):
         print("Beginning Amass intel -org")
         process = subprocess.Popen(["amass", "intel -src -org {self.organisation_root} -max-dns-queries 2500 -oA {output_path} -l {log_path}"], stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
@@ -259,12 +305,6 @@ class Target:
         process = subprocess.Popen(["amass", "intel -src -cidr {self.cidr_range} -max-dns-queries 2500 -oA {output_path} -l {log_path}"], stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
         process.wait()
         print("Amass intel -src -cidr complete")
-
-
-    # Beware as an idiot that is not a paying student of Haddix - https://www.youtube.com/watch?v=nGs8pWIj5k4 6:10 - do not automate the ASN recon
-    # Multiple companies that are named that same thing!!! 
-    # Enjoy Scope : and not NoScoping yourself! Future me
-
     # Acquistion Recon Utility
     # cat $1 awk -F, '{print $1}' ORS=',' | sed 's/,$//' | xargs -P3 -I@ -d ',' > $2
     async def acqRec_Util_amass_find_ans(intel_output_path, outpath_file):
@@ -418,6 +458,11 @@ class Target:
                     )
 
 
+def signal_handler(sig, frame):
+    print("You pressed CTRL+C!")
+    print("Happy Hacking!")
+    sys.exit(0)
+
 
 def main():
    
@@ -503,13 +548,14 @@ def main():
                         required=False, 
                         help='Provide a custom recon-ng resource file, see default {badger_location} ')
 
-
     
+    signal.signal(signal.SIGINT, signal_handler)
 
     if len(sys.argv) ==	 1:
         parser.print_help()
         sys.exit(1)
 
+    
 
     args = parser.parse_args()
     args_dict = vars(args)
