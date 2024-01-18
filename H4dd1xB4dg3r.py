@@ -163,14 +163,14 @@ class Target:
                     if second_acceptance == "Y":
                         break
                     else:
-                        selection_complete = selection_for_updating_out_of_scope_file()
+                        selection_complete = update_out_of_scope_file()
                         if select_complete == False:
                             print("Failed Selection for updating out-of-scope.txt - Return to the infinite loop of safety!")
                             continue
                         else:
                             break
                 else:
-                    selection_complete = selection_for_updating_out_of_scope_file()
+                    selection_complete = update_out_of_scope_file()
                     if select_complete == False:
                         print("Failed Selection for updating out-of-scope.txt - Return to the infinite loop of safety!")
                         continue
@@ -180,8 +180,17 @@ class Target:
                 print("This script is very insistent on trying to avoid you making scope mistake, please try harder to enter either Y for Yes or N for No")
                 continue
 
-                        
+    # Filesystem snapshot and comparsion
+    # Make new directory
 
+    # TODO - IT MAY BE POSSIBLE THAT PYTHON IS NOT THE ANSWER TO THIS PROBLEM A WRAPPER MAY BE - this a thread of the master play VERY useful for blue and red teaming - Omniserver, Gzhodan - HAIL THE MIGHT GZLOP
+    # TODO DO NOT WRITE IT IN PYTHON - WRAP EVERYTHING
+    # Added new directories
+    # Documenting what changes and additions are made:
+    # out-of-scope file, directory structure
+    # Make sure that all new data is unique before saving to disks if possible
+    # Ensure linear collection to prevent duplicate additions
+    # 
     def recusive_handler():
         if self.current_recursion_count != 0:
             update_out_of_scope_file_handler()
