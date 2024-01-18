@@ -1,6 +1,6 @@
 #!/usr/bin/python
 import multiprocessing as mp
-import threading, os, sys, time, subprocess, logging, argparse, re, asyncio, path
+import threading, os, sys, time, subprocess, logging, argparse, re, asyncio
 from  typing import Any, Awaitable
 from dataclasses import dataclass
 # import workspace_management internalise it in the class
@@ -45,8 +45,9 @@ class Target:
     recon_ng_custom_file_checks: bool
     recon_ng_resource_file_path: str
     project_default_parent_path: str
+    current_recursion_count: int
     max_recursion_count: int
-    non_uniq_domain_names: List[str] 
+    non_uniq_domain_names: List[str]
 
     def __init__(self, args):
         self.organisation_root = args.organisation
@@ -58,7 +59,7 @@ class Target:
         self.project_default_parent_path = '/tmp'
         self.asnum = {}
         self.ansnum = {}
-
+        self.current_recursive_count = 0
 
         if args.project_path != '':
             self.full_path_to_project_dir = f"{args.project_path}/"
@@ -138,8 +139,63 @@ class Target:
         else:
             os.mkdir({path}/domainmap/{address}/wordlists)
         print(f"Directory structure added to {path}/domainmap")
- 
-    def check_custom_recon_ng_file(filepath): #TODO
+
+    def update_out_of_scope_file():
+    
+    def map_inital_files():
+
+    def map_recursion_new_domains():
+    
+    def map_recursion_new_urls():
+    
+    def map_recursion_new_cidr():
+    
+    def map_recursion_new_files_and_dirs():
+
+    def updating_out_of_scope_file_handler():
+        print("For the sake of legality and judgement, I must insist you check new finding manually incase of scope changes or to updated")
+        print("N will then prompt you for how you want to update the out-of-scope.txt file!")
+        while True:
+            try:
+                acceptance = str(input("[!] Are you sure you want to continue, this script will ask you again - I must insist (Y/N)!"))
+                if acceptance == "Y":
+                    second_acceptance = str(input("[!] Are you absolutely sure you want to continue - final chance (Y/N)!"))
+                    if second_acceptance == "Y":
+                        break
+                    else:
+                        selection_complete = selection_for_updating_out_of_scope_file()
+                        if select_complete == False:
+                            print("Failed Selection for updating out-of-scope.txt - Return to the infinite loop of safety!")
+                            continue
+                        else:
+                            break
+                else:
+                    selection_complete = selection_for_updating_out_of_scope_file()
+                    if select_complete == False:
+                        print("Failed Selection for updating out-of-scope.txt - Return to the infinite loop of safety!")
+                        continue
+                    else:
+                        break
+            except ValueError:
+                print("This script is very insistent on trying to avoid you making scope mistake, please try harder to enter either Y for Yes or N for No")
+                continue
+
+                        
+
+    def recusive_handler():
+        if self.current_recursion_count != 0:
+            update_out_of_scope_file_handler()
+            map_recursion_new_files_and_dirs()
+            map_recursion_new_domains()
+            map_recursion_new_urls()
+            map_recursion_new_cidr()
+        else:
+            map_inital_files()
+
+        
+    
+    #TODO
+    def check_custom_recon_ng_file(filepath): 
         extension_test = False
         if filepath.contains(".txt"):
             extension_test = True
@@ -148,7 +204,7 @@ class Target:
             self.recon_ng_resource_file_path = args.recon_ng_custom_resource_file 
             self.recon_ng_custom_resource_file = True
             self.recon_ng_custom_file_checks = check_custom_recon_ng_file() # TODO
-            print(f"custom resource file accepted and will be moved to {self.project_path}/recon-ng/")
+            print(f"Custom resource file accepted and will be moved to {self.project_path}/recon-ng/")
 
 
     async def run_sequence(*functions: Awaitable[Any]) -> None:
@@ -456,6 +512,8 @@ class Target:
                             ),
                         ),
                     )
+
+
 
 
 def signal_handler(sig, frame):
