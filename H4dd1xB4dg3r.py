@@ -1,6 +1,6 @@
 #!/usr/bin/python
 import multiprocessing as mp
-import threading, os, sys, time, subprocess, logging, argparse, re, asyncio
+import threading, os, sys, time, subprocess, logging, argparse, re, asyncio, signal
 from  typing import Any, Awaitable
 from dataclasses import dataclass
 # import workspace_management internalise it in the class
@@ -47,11 +47,11 @@ class Target:
     project_default_parent_path: str
     current_recursion_count: int
     max_recursion_count: int
-    non_uniq_domain_names: List[str]
+    non_uniq_domain_names: list
 
     def __init__(self, args):
         self.organisation_root = args.organisation
-        self.domain_root = args.domain_name
+        self.domain_root = ''
         self.non_uniq_domain_names = []
         self.toollist = ['amass', 'aquatone', 'domLink', 'assetfinder', 'waybackurls', 'theHarvester', 'findrelationships', 'recon-ng']
         self.recon_ng_custom_resource_file_exists = False
@@ -60,6 +60,24 @@ class Target:
         self.asnum = {}
         self.ansnum = {}
         self.current_recursive_count = 0
+        
+        if args.asn != '':
+            self.asnnum =+ args.asn 
+        else:
+            print("It is best practice to start with ASNs that you have manually checked!") 
+            print("Beware as an idiot that is non-paying student of Jason Haddix - https://www.youtube.com/watch?v=nGs8pWIj5k4 6:10 - do not automate the ASN recon")
+            print("Amass does not check you legal protections, shine your shoes and counter-sue a target!") 
+
+        if args.domain != '':
+            print("It is best practice to start with ASNs that you have manually checked!") 
+            print("Beware as an idiot that is non-paying student of Jason Haddix - https://www.youtube.com/watch?v=nGs8pWIj5k4 6:10 - do not automate the ASN recon")
+            print("Amass does not check you legal protections, shine your shoes and counter-sue a target!") 
+            if self.asnnum == '':
+                choice = choice_wheel_of_doom("ARE REALLY SURE THAT WANT TO CONTINUE WITHOUT A ASN")
+                print("I am sorry you are being stupid")
+                os.exit()
+        else:
+            print("No domains were passed at the command line")
 
         if args.project_path != '':
             self.full_path_to_project_dir = f"{args.project_path}/"
@@ -140,44 +158,53 @@ class Target:
             os.mkdir({path}/domainmap/{address}/wordlists)
         print(f"Directory structure added to {path}/domainmap")
 
-    def update_out_of_scope_file():
+    def update_out_of_scope_file(file):
+        print(f"Updating out of scope file {file}")
     
-    def map_inital_files():
+    def map_inital_files(dir):
+        print(f"Mapping directory: {dir}")
 
     def map_recursion_new_domains():
+        print(f"Mapping recursively to find new domains in: {dir}")
     
     def map_recursion_new_urls():
+        print(f"Mapping recursively to find new urls in: {dir}")
     
     def map_recursion_new_cidr():
+        print(f"Mapping recursively to find new CIDR in: {dir}")
     
     def map_recursion_new_files_and_dirs():
-
+        print(f"Mapping recursively to find new all new files in: {dir}")
+    
     def updating_out_of_scope_file_handler():
         print("For the sake of legality and judgement, I must insist you check new finding manually incase of scope changes or to updated")
         print("N will then prompt you for how you want to update the out-of-scope.txt file!")
+        choice = choice_wheel_of_doom("updating out-of-scope.txt")
+        if choice:
+            update_out_of_scope_file()
+        else:
+            print("Something regarding the selection of scope of update the out-of-scope.txt went very wrong")        
+
+    def choice_wheel_of_doom(selectionString):
         while True:
             try:
                 acceptance = str(input("[!] Are you sure you want to continue, this script will ask you again - I must insist (Y/N)!"))
                 if acceptance == "Y":
                     second_acceptance = str(input("[!] Are you absolutely sure you want to continue - final chance (Y/N)!"))
                     if second_acceptance == "Y":
-                        break
+                        return true
                     else:
-                        selection_complete = update_out_of_scope_file()
-                        if select_complete == False:
-                            print("Failed Selection for updating out-of-scope.txt - Return to the infinite loop of safety!")
-                            continue
-                        else:
-                            break
+                        print(f"Failed Selection for {selectionString} - Return to the infinite loop of safety!")
+                        continue
                 else:
                     selection_complete = update_out_of_scope_file()
                     if select_complete == False:
-                        print("Failed Selection for updating out-of-scope.txt - Return to the infinite loop of safety!")
+                        print(f"Failed Selection for {selectionString} - Return to the infinite loop of safety!")
                         continue
                     else:
                         break
             except ValueError:
-                print("This script is very insistent on trying to avoid you making scope mistake, please try harder to enter either Y for Yes or N for No")
+                print(f"This script is very insistent on trying to avoid you making some \"{selectionString}\" mistake, please try harder to enter either Y for Yes or N for No")
                 continue
 
     # Filesystem snapshot and comparsion
@@ -265,14 +292,14 @@ class Target:
 
     async def check_uniq_domain_name(domain_name):
         if self.non_uniq_domain_names.contains(domain_name):
-            add_new_domain_name()
+            add_new_domain_name_to_records()
         # else: check the queue and remove any that QUEUE 
                 
-    async def add_new_domain_name():
+    async def add_new_domain_name_to_records():
         with open(self.domain_names_file_path, "a") as f:
             f.write(domain_name)
             self.domain_names_historic += domain_name
-            print(f"Found a new domain name: {domain_name}")
+            print(f"Added a new domain name: {domain_name}")
 
     
     # From each util_concatenation function
@@ -308,6 +335,13 @@ class Target:
         process.wait()
         print(f"Recon-NG OSINT against {target} check {output_path}")
 
+    def shodanSelection():
+        print("This function is here to the set flags and provide information")
+        print("Shodan is powerful")
+        print("For information regarding Shodan for recon: https://www.youtube.com/watch?v=4CL_8GRNVTE shodan-cli")
+        print("Shosbugo https://github.com/incogbyte/shosubgo - grab subdomain using shodan api")
+        
+
     # Acquistion Recon 
     #async def acquisition_recon_wordlist_generation():
         #scrap crunchbase, wiki, google
@@ -327,14 +361,11 @@ class Target:
     # curl hurricane electric's internet serivces site: bgp.hg.net
     # provide organisation name
 
-    # echo $ASN | asnmap -slient | naabu -silent  - optional naabu hellscape nmap-cli 
+    # echo $ASN | asnmap -sient | naabu -silent  - optional naabu hellscape nmap-cli 
     # OR 
     # Stealth do `smap` https://github.com/s0md3v/Smap - uses nmap syntax! does not need a shodan key, but uses shodan!
 
-
-    # Shodan recon - https://www.youtube.com/watch?v=4CL_8GRNVTE shodan-cli
-
-    # Shosbugo https://github.com/incogbyte/shosubgo - grab subdomain using shodan api   
+   
 
 
     # TODO
@@ -470,7 +501,7 @@ class Target:
             # newdomains -> big_list
             # TODO refactor to one function!
 
-    # Domain FLyerover with screenshots
+    # Domain Flyerover with screenshots
     async def aquatone_flyover(input_path, output_path):
         print(f"Running Aquatone with listing {input_path}")      
         process = subprocess.Popen(["scripts/aquatoneEverything.sh", "{input_path} {output-path}"], stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
@@ -582,7 +613,13 @@ def main():
                         metavar='domain_name', 
                         action='store', 
                         type=str, 
-                        help='Provide a domain name used as intial passive recon target')
+                        help='Provide a domain name used for intial passive recon of target - It is \"Best Practice\" to provide valid ASN - but you do you...')
+
+    parser.add_argument('-a', 
+                        metavar='asn', 
+                        action='store', 
+                        type=str, 
+                        help='Provide a valid ASN used for intial passive recon of target - Best Practice')
 
     parser.add_argument('-n', 
                         metavar='project_name', 
@@ -610,7 +647,7 @@ def main():
                         help='Provide an amount of times to recursively consildate and rerun tools on consolidated data')
      
     parser.add_argument('-c', 
-                        metavar='recon_ng_custom_resource_file', 
+                        metavar='recon_ng_custom', 
                         action='store', 
                         required=False, 
                         help='Provide a custom recon-ng resource file, see default {badger_location} ')
