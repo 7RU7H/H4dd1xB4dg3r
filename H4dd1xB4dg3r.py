@@ -50,7 +50,7 @@ class Target:
     non_uniq_domain_names: list
 
     def __init__(self, args):
-        self.organisation_root = args.organisation
+        self.organisation_root = args.target_organisation
         self.domain_root = ''
         self.non_uniq_domain_names = []
         self.toollist = ['amass', 'aquatone', 'domLink', 'assetfinder', 'waybackurls', 'theHarvester', 'findrelationships', 'recon-ng']
@@ -282,6 +282,8 @@ class Target:
         if check_uniq_domain_name(temp_domain):
             add_new_domain_name()
 
+    # is (?<=://)(?i)[a-z,.]* better?
+    # From https://www.bugcrowd.com/blog/how-to-regex-a-practical-guide-to-regular-expressions-regex-for-hackers/
     async def trim_excess_from_domain_name(url):
         rm_proto_and_dir = str(re.findall(r':\/\/(.[^/]+)', url))
         unlist = rm_proto_and_dir[0]
@@ -598,13 +600,13 @@ def main():
     print("=======================================================================")
 
     parser = argparse.ArgumentParser(#prog='H4dd1xB4dg3r', 
-                                    usage='%(prog)s [options] target', 
+                                    usage='%(prog)s [options] target_organisation', 
                                     description='Automated Bug Bounty OSINT an organisation',
                                     epilog='Happy Hacking :)',
                                     add_help=True,)
 
     parser.add_argument('target_organisation',
-                        metavar='organisation', 
+                        metavar='target_organisation', 
                         action='store', 
                         type=str, 
                         help='Provide a target organisation to OSINT')
@@ -659,12 +661,11 @@ def main():
         parser.print_help()
         sys.exit(1)
 
-    
 
     args = parser.parse_args()
     args_dict = vars(args)
-
-    current_target = Target(**args_dict)
+    print(f"args_dict: {args_dict} and its type:{type(args_dict)}")
+    current_target = Target(args_dict)
     # current_target setup
 
     
